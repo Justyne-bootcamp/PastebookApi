@@ -40,6 +40,8 @@ namespace Pastebook.Web
             services.AddDbContext<PastebookContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IUserAccountRepository, UserAccountRepository>();
             services.AddScoped<IUserAccountService, UserAccountService>();
+            services.AddScoped<IAlbumRepository, AlbumRepository>();
+            services.AddScoped<IAlbumService, AlbumService>();
             services.AddCors();
         }
 

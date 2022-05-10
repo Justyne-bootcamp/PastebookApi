@@ -20,12 +20,12 @@ namespace Pastebook.Data.Repositories
 
     public class GenericRepository<T> where T : BaseEntity
     {
+        public PastebookContext Context { get; set; }
         public GenericRepository(PastebookContext context)
         {
             this.Context = context;
         }
 
-        public PastebookContext Context { get; set; }
 
         public async Task<IEnumerable<T>> FindAll()
         {
