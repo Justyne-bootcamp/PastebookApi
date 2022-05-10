@@ -39,7 +39,9 @@ namespace Pastebook.Web
             string connectionString = Configuration.GetValue<string>("ConnectionString");
             services.AddDbContext<PastebookContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IUserAccountService, UserAccountService>();
+            services.AddScoped<IPostService, PostService>();
             services.AddCors();
         }
 

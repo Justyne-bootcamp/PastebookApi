@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Web\\Pastebook.Web.csproj": {}
+    "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Data\\Pastebook.Data.csproj": {
+    "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Data\\Pastebook.Data.csproj",
+        "projectUniqueName": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
         "projectName": "Pastebook.Data",
-        "projectPath": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Data\\Pastebook.Data.csproj",
-        "packagesPath": "C:\\Users\\justyne.nam-ay\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Data\\obj\\",
+        "projectPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
+        "packagesPath": "C:\\Users\\mikko.dacasin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\justyne.nam-ay\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mikko.dacasin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -80,20 +80,20 @@
         }
       }
     },
-    "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Web\\Pastebook.Web.csproj": {
+    "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Web\\Pastebook.Web.csproj",
+        "projectUniqueName": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
         "projectName": "Pastebook.Web",
-        "projectPath": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Web\\Pastebook.Web.csproj",
-        "packagesPath": "C:\\Users\\justyne.nam-ay\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Web\\obj\\",
+        "projectPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
+        "packagesPath": "C:\\Users\\mikko.dacasin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\justyne.nam-ay\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mikko.dacasin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -108,8 +108,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Data\\Pastebook.Data.csproj": {
-                "projectPath": "C:\\Users\\justyne.nam-ay\\Documents\\backend\\DotNet\\Pastebook\\Pastebook.Data\\Pastebook.Data.csproj"
+              "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj": {
+                "projectPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj"
               }
             }
           }
@@ -127,6 +127,16 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[5.0.16, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.16, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[5.0.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
