@@ -26,6 +26,7 @@ namespace Pastebook.Data.Models
         public int? MobileNumber { get; set; }
         public string AboutMe { get; set; }
         public string ProfilePhotoPath { get; set; }
+        public string Username { get; set; }
 
         public virtual ICollection<Album> Albums { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

@@ -43,8 +43,18 @@ namespace Pastebook.Web.Controllers
                 }
              );
             }
-            
-            
+        }
+
+        [HttpPost, Route("/register")]
+        public IActionResult RegisterNewUser(UserAccount userAccount)
+        {
+            var newGuid = Guid.NewGuid();
+            userAccount.UserAccountId = newGuid;
+            userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
+            var newPassword = _userAccountService.GetHashPassword(userAccount.Password,newGuid.ToString());
+            userAccount.Password = newPassword;
+            var newUser = _userAccountService.Insert(userAccount);
+            return StatusCode(StatusCodes.Status201Created, newUser);
         }
     }
 }

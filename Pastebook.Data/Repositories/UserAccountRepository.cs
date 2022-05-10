@@ -1,19 +1,19 @@
 ﻿using Pastebook.Data.Data;
 using Pastebook.Data.Models;
-using Pastebook.Data.Models.DataTransferObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Pastebook.Data.Exceptions;
+using System.Security.Cryptography;
 
 namespace Pastebook.Data.Repositories
 {
     public interface IUserAccountRepository: IBaseRepository<UserAccount> 
     {
-        public CredentialDTO FindByEmail(string email);
-        public bool FindEmail(string email);
+        public string CreateUsername(string firstName, string lastName);
+        public string CheckUsernameExist(string concattedName);
+        public string GetHash(string password, string salt);
     }
     public class UserAccountRepository : GenericRepository<UserAccount>, IUserAccountRepository
     {
@@ -21,34 +21,38 @@ namespace Pastebook.Data.Repositories
         {
         }
 
-        public bool FindEmail(string email)
+        public string CreateUsername(string firstName, string lastName)
         {
-            var doesExist = this.Context.UserAccounts
-                .Select(e => e)
-                .Where(e => e.Email.Equals(email))
-                .FirstOrDefault();
-            if(doesExist is object)
-            {
-                return true;
-            }
-            else
-            {
-                throw new InvalidCredentialException($"Invalid Credential. No user with email: {email} found.");
-            }
+            string concattedName = firstName.Trim() + lastName.Trim();
+            string username = this.CheckUsernameExist(concattedName);
+            return username;
         }
-        public CredentialDTO FindByEmail(string email)
+
+        public string CheckUsernameExist(string concattedName)
         {
-            var userAccount = this.Context.UserAccounts
-                .Select(e => new CredentialDTO() {
-                    UserAccountId = e.UserAccountId,
-                    Email = e.Email,
-                    Password = e.Password,
-                    FirstName = e.FirstName,
-                    LastName = e.LastName
-                })
-                .Where(e => e.Email.Equals(email))
-                .FirstOrDefault();
-            return userAccount;
+            for (int disambiguator = 1; disambiguator <= this.Context.Set<UserAccount>().Count(); disambiguator++)
+            {
+
+                var isExisting = this.Context.Set<UserAccount>()
+                    .Where(x => x.Username.Equals(concattedName + disambiguator));
+
+                if (!isExisting.Any())
+                {
+                    return concattedName+disambiguator;
+                }
+            }
+            return concattedName;
+        }
+
+        public string GetHash(string password, string salt)
+        {
+            byte[] unhashedBytes = Encoding.Unicode.GetBytes(String.Concat(salt, password));
+
+            SHA256Managed sha256 = new SHA256Managed();
+            byte[] hashedBytes = sha256.ComputeHash(unhashedBytes);
+            string hashedString = Convert.ToBase64String(hashedBytes);
+
+            return hashedString;
         }
     }
 }
