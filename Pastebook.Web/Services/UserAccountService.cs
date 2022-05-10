@@ -1,4 +1,5 @@
 ﻿using Pastebook.Data.Models;
+using Pastebook.Data.Models.DataTransferObjects;
 using Pastebook.Data.Repositories;
 using System;
 using System.Collections;
@@ -11,6 +12,8 @@ namespace Pastebook.Web.Services
     {
         public Task<IEnumerable<UserAccount>> FindAll();
         public Task<UserAccount> FindById(Guid id);
+        public bool FindEmail(string email);
+        public CredentialDTO FindByEmail(string email);
     }
     public class UserAccountService: IUserAccountService
     {
@@ -28,6 +31,15 @@ namespace Pastebook.Web.Services
         public async Task<UserAccount> FindById(Guid id)
         {
             return await _userAccountRepository.FindByPrimaryKey(id);
+        }
+
+        public bool FindEmail(string email)
+        {
+            return _userAccountRepository.FindEmail(email);
+        }
+        public CredentialDTO FindByEmail(string email)
+        {
+            return _userAccountRepository.FindByEmail(email);
         }
     }
 }

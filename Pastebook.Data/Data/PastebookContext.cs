@@ -122,6 +122,7 @@ namespace Pastebook.Data.Data
                 entity.Property(e => e.UserAccountId).ValueGeneratedNever();
 
                 entity.Property(e => e.Email).IsRequired();
+                entity.HasIndex(e => e.Email).IsUnique();
 
                 entity.Property(e => e.FirstName).IsRequired();
 

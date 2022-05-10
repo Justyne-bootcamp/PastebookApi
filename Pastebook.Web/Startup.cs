@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +31,11 @@ namespace Pastebook.Web
         {
 
             services.AddControllers();
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pastebook", Version = "v1" });
@@ -52,7 +56,6 @@ namespace Pastebook.Web
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pastebook.Web v1"));
             }
-            //"http://localhost:4200"
             app.UseCors(options => 
             options.AllowAnyOrigin()
             .AllowAnyMethod()
@@ -63,11 +66,13 @@ namespace Pastebook.Web
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=UserAccount}/{action=Index}/{id?}");
+                    pattern: "{controller=Session}/{action=LoginEmail}/{email?}");
             });
         }
     }
