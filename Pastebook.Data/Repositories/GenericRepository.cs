@@ -13,19 +13,19 @@ namespace Pastebook.Data.Repositories
     {
         Task<IEnumerable<T>> FindAll();
         Task<T> FindByPrimaryKey(Guid id);
-        T Insert(T entity);
+        Task<T> Insert(T entity);
         T Update(T entity);
         Task<T> Delete(Guid id);
     }
 
     public class GenericRepository<T> where T : BaseEntity
     {
+        public PastebookContext Context { get; set; }
         public GenericRepository(PastebookContext context)
         {
             this.Context = context;
         }
 
-        public PastebookContext Context { get; set; }
 
         public async Task<IEnumerable<T>> FindAll()
         {
@@ -45,9 +45,9 @@ namespace Pastebook.Data.Repositories
             throw new Exception($"Entity does not exist {id}");
         }
 
-        public T Insert(T entity)
+        public async Task<T> Insert(T entity)
         {
-            Context.Add<T>(entity);
+            Context.AddAsync<T>(entity);
             Context.SaveChanges();
             return entity;
         }
