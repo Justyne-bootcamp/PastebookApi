@@ -29,25 +29,24 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/Insert")]
-        public IActionResult Insert()
+        [Route("/insert/{albumName}")]
+        public async Task<IActionResult> Insert(string albumName)
         {
             var newAlbumId = Guid.NewGuid();
             var album = new Album()
             {
                 AlbumId = newAlbumId,
-                AlbumName = "someAlbum",
+                AlbumName = albumName,
                 UserAccountId = Guid.Parse("6BE600D8-E367-4E04-9EF1-72D9F138B151")
             };
             var newAlbum = _albumService.Insert(album);
             return StatusCode(StatusCodes.Status200OK, album);
         }
         [HttpDelete]
-        [Route("/Delete")]
-        public async Task<IActionResult> Delete()
+        [Route("/delete/{albumId:Guid}")]
+        public async Task<IActionResult> Delete(Guid albumId)
         {
 
-            var albumId = Guid.Parse("BA4F873D-3FCD-496E-B110-C1712D246D9F");
             var album = await _albumService.Delete(albumId);
             return StatusCode(StatusCodes.Status200OK, album);
         }

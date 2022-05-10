@@ -11,7 +11,7 @@ namespace Pastebook.Web.Services
         public Task<IEnumerable<Album>> FindAll();
         public Task<Album> FindById(Guid id);
 
-        public Album Insert(Album album);
+        public Task<Album> Insert(Album album);
         public Task<Album> Delete(Guid albumId);
 
     }
@@ -33,9 +33,9 @@ namespace Pastebook.Web.Services
             return await _albumRepository.FindByPrimaryKey(id);
         }
 
-        public Album Insert(Album album)
+        public async Task<Album> Insert(Album album)
         {
-            return _albumRepository.Insert(album);
+            return await _albumRepository.Insert(album);
         }
 
         public async Task<Album> Delete(Guid albumId)
