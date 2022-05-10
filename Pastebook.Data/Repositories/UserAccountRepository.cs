@@ -40,6 +40,7 @@ namespace Pastebook.Data.Repositories
         {
             var userAccount = this.Context.UserAccounts
                 .Select(e => new CredentialDTO() {
+                    UserAccountId = e.UserAccountId,
                     Email = e.Email,
                     Password = e.Password,
                     FirstName = e.FirstName,

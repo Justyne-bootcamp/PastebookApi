@@ -54,6 +54,7 @@ namespace Pastebook.Web.Controllers
             {
                 var username = user.FirstName + user.LastName;
                 HttpContext.Session.SetString("username", username);
+                HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());
                 return StatusCode(
                     StatusCodes.Status200OK,
                     new HttpResponseResult()
@@ -72,6 +73,7 @@ namespace Pastebook.Web.Controllers
                         StatusCode = StatusCodes.Status404NotFound
                     });
             }
+            
         }
         public IActionResult Logout()
         {
