@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Y8sL4wjadRp7NgF6X4ubB6rUs9jAzCxJivm5R+dBq8BI/yNiPOiFfWf5YzBf7Tk9OynV9ZaM40YW2Mabptvw5w==",
+  "dgSpecHash": "VeYo7gv+HoyJ83Ip9SyguxJmchuxtUA1ndpI8aisuXDbyKnKTfByrI642F0v7iCTzMwq2BEBU4qhNfzex0ECcg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\richard.balanza\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
+  "projectFilePath": "C:\\Users\\richard.balanza\\source\\repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\richard.balanza\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\richard.balanza\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

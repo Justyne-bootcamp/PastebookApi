@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zVeRT21chlA0Oa6BpcJVHH4BORloNet9wEu0hYKXMcRcLR8BxtBf/HKnYCz14mW/qWkDp3zJEC8hxZ1Cr+fHqg==",
+  "dgSpecHash": "cI+uJopo9e9IAWbkUQOKx3Mdhj0vglR7QZl/jcOIuhMuQdNHQ+GRVWGHmWNg57pUZSF3aOBVE6SmB2d14egXLQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\richard.balanza\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
+  "projectFilePath": "C:\\Users\\richard.balanza\\source\\repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\richard.balanza\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\richard.balanza\\.nuget\\packages\\microsoft.data.sqlclient\\2.0.1\\microsoft.data.sqlclient.2.0.1.nupkg.sha512",

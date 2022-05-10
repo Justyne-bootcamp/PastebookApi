@@ -11,6 +11,8 @@ namespace Pastebook.Web.Services
     {
         public Task<IEnumerable<UserAccount>> FindAll();
         public Task<UserAccount> FindById(Guid id);
+
+        public UserAccount Insert(UserAccount userAccount);
     }
     public class UserAccountService: IUserAccountService
     {
@@ -28,6 +30,11 @@ namespace Pastebook.Web.Services
         public async Task<UserAccount> FindById(Guid id)
         {
             return await _userAccountRepository.FindByPrimaryKey(id);
+        }
+
+        public UserAccount Insert(UserAccount userAccount)
+        {
+            return _userAccountRepository.Insert(userAccount);
         }
     }
 }
