@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Models;
+using Pastebook.Web.Data;
 using Pastebook.Web.Http;
 using Pastebook.Web.Services;
 using System;
@@ -13,6 +14,7 @@ namespace Pastebook.Web.Controllers
     public class UserAccountController : ControllerBase
     {
         private readonly IUserAccountService _userAccountService;
+        private IUnitOfWork UnitOfWork { get; set; }
         public UserAccountController(IUserAccountService userAccountService)
         {
             _userAccountService = userAccountService;
@@ -45,6 +47,21 @@ namespace Pastebook.Web.Controllers
             }
             
             
+        }
+
+        [HttpPost]
+        [Route("/register")]
+        public async Task<IActionResult> RegisterUser([FromBody] UserAccount userAccount)
+        {
+            if (ModelState.IsValid)
+            {
+                var newUser = await UnitOfWork.UserAccountRepository.Insert(userAccount);
+                await UnitOfWork.CommitAsync();
+
+                return StatusCode(StatusCodes.Status201Created, newUser);
+            }
+
+            return BadRequest();
         }
     }
 }

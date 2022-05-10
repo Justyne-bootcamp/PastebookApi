@@ -1,5 +1,5 @@
 ﻿using Pastebook.Data.Models;
-using Pastebook.Data.Repositories;
+using Pastebook.Web.Repositories;
 using System;
 using System.Collections;
 using System.Collections.Generic;
