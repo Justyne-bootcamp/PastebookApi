@@ -179,6 +179,9 @@ namespace Pastebook.Data.Migrations
                     b.Property<string>("ProfilePhotoPath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserAccountId");
 
                     b.ToTable("UserAccounts");

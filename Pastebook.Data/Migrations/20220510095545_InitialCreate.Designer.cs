@@ -10,7 +10,7 @@ using Pastebook.Data.Data;
 namespace Pastebook.Data.Migrations
 {
     [DbContext(typeof(PastebookContext))]
-    [Migration("20220510080705_InitialCreate")]
+    [Migration("20220510095545_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,6 +179,9 @@ namespace Pastebook.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfilePhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserAccountId");

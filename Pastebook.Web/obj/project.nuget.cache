@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DPHwR1thmfcEAHCmVdu5TqmUEYfpq1QaKk5euMOGIQ7RzwGsVlueDCXYe0xnHLCc7xYaT2C2U9ST2yqsiyCGNQ==",
+  "dgSpecHash": "cekDniaV4aD78PB4w01KnCwrRoVvnqLuwoE/uheTYTi27/wdKS4NPjeTgtEKg+04vWXrOw0K3zpx4HFGzhOh3Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
+  "projectFilePath": "C:\\Users\\mikko.dacasin\\source\\repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mikko.dacasin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\mikko.dacasin\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",
