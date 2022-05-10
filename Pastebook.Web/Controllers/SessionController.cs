@@ -75,10 +75,14 @@ namespace Pastebook.Web.Controllers
             }
             
         }
+
+        [HttpPost]
+        [Route("logout")]
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("email");
             HttpContext.Session.Remove("username");
+            HttpContext.Session.Remove("userAccountId");
             return StatusCode(
                     StatusCodes.Status200OK,
                     new HttpResponseResult()

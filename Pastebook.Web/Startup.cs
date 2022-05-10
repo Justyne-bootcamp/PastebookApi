@@ -54,7 +54,7 @@ namespace Pastebook.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pastebook.Web v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pastebook v1"));
             }
             app.UseCors(options => 
             options.AllowAnyOrigin()
