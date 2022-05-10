@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj": {}
+    "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj": {
+    "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
+        "projectUniqueName": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
         "projectName": "Pastebook.Data",
-        "projectPath": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
-        "packagesPath": "C:\\Users\\rodel.tejero\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Data\\obj\\",
+        "projectPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj",
+        "packagesPath": "C:\\Users\\mikko.dacasin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\rodel.tejero\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mikko.dacasin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -76,24 +76,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj": {
+    "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
+        "projectUniqueName": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
         "projectName": "Pastebook.Web",
-        "projectPath": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
-        "packagesPath": "C:\\Users\\rodel.tejero\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Web\\obj\\",
+        "projectPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\Pastebook.Web.csproj",
+        "packagesPath": "C:\\Users\\mikko.dacasin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\rodel.tejero\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mikko.dacasin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -108,8 +108,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj": {
-                "projectPath": "C:\\Users\\rodel.tejero\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj"
+              "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj": {
+                "projectPath": "C:\\Users\\mikko.dacasin\\Source\\Repos\\PastebookApi\\Pastebook.Data\\Pastebook.Data.csproj"
               }
             }
           }
@@ -128,6 +128,16 @@
               "target": "Package",
               "version": "[5.0.16, )"
             },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.16, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
@@ -143,12 +153,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[5.0.16, 5.0.16]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -157,7 +161,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

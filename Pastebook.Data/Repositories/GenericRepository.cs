@@ -14,18 +14,18 @@ namespace Pastebook.Data.Repositories
         Task<IEnumerable<T>> FindAll();
         Task<T> FindByPrimaryKey(Guid id);
         Task<T> Insert(T entity);
-        T Update(T entity);
+        Task<T> Update(T entity);
         Task<T> Delete(Guid id);
     }
 
     public class GenericRepository<T> where T : BaseEntity
     {
-        public PastebookContext Context { get; set; }
         public GenericRepository(PastebookContext context)
         {
             this.Context = context;
         }
 
+        public PastebookContext Context { get; set; }
 
         public async Task<IEnumerable<T>> FindAll()
         {
@@ -52,13 +52,10 @@ namespace Pastebook.Data.Repositories
             return entity;
         }
 
-
-        public T Update(T entity)
+        public async Task<T> Update(T entity)
         {
 
             this.Context.Attach<T>(entity);
-
-
             this.Context.Entry<T>(entity).State = EntityState.Modified;
             this.Context.SaveChanges();
             return entity;
