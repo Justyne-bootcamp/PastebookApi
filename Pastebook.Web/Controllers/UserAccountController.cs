@@ -24,7 +24,7 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status200OK, userAccount);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetUserAccount(Guid id)
         {
