@@ -53,13 +53,13 @@ namespace Pastebook.Web.Controllers
             if (user.Password.Equals(password))
             {
                 var username = user.FirstName + user.LastName;
-                HttpContext.Session.SetString("username", username);
+                HttpContext.Session.SetString("username", user.Username);
                 HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());
                 return StatusCode(
                     StatusCodes.Status200OK,
                     new HttpResponseResult()
                     {
-                        Message = username,
+                        Message = user.Username + " " + HttpContext.Session.GetString("userAccountId"),
                         StatusCode = StatusCodes.Status200OK
                     });
             }
@@ -67,7 +67,7 @@ namespace Pastebook.Web.Controllers
             {
                 return StatusCode(
                     StatusCodes.Status404NotFound,
-                    new HttpResponseResult()
+                    new HttpResponseError()
                     {
                         Message = "Invalid Credential. Invalid Password.",
                         StatusCode = StatusCodes.Status404NotFound

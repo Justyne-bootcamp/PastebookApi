@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Models;
+using Pastebook.Web.Http;
 using Pastebook.Web.Services;
 using System;
 using System.Threading.Tasks;
@@ -13,11 +14,9 @@ namespace Pastebook.Web.Controllers
     {
         private readonly IAlbumService _albumService;
 
-
-        public AlbumController(IAlbumService albumService, IUserAccountService userAccountService)
+        public AlbumController(IAlbumService albumService)
         {
             _albumService = albumService;
-
         }
 
         [HttpGet]
@@ -29,21 +28,35 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/insert/{albumName}")]
+        [Route("insert/{albumName}")]
         public async Task<IActionResult> Insert(string albumName)
         {
-            var newAlbumId = Guid.NewGuid();
+            var userAccountId = HttpContext.Session.GetString("userAccountId");
             var album = new Album()
             {
-                AlbumId = newAlbumId,
+                AlbumId = Guid.NewGuid(),
                 AlbumName = albumName,
-                UserAccountId = Guid.Parse("6BE600D8-E367-4E04-9EF1-72D9F138B151")
+                UserAccountId = Guid.Parse(userAccountId)
             };
+
             var newAlbum = _albumService.Insert(album);
-            return StatusCode(StatusCodes.Status200OK, album);
+            if(newAlbum != null)
+            {
+                return StatusCode(StatusCodes.Status201Created, newAlbum);
+            }
+            else
+            {
+                return StatusCode(
+                    StatusCodes.Status404NotFound,
+                    new HttpResponseError()
+                    {
+                        Message = "Album not Created",
+                        StatusCode = StatusCodes.Status404NotFound
+                    });
+            }
         }
         [HttpDelete]
-        [Route("/delete/{albumId:Guid}")]
+        [Route("delete/{albumId:Guid}")]
         public async Task<IActionResult> Delete(Guid albumId)
         {
 

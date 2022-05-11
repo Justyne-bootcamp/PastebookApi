@@ -32,16 +32,26 @@ namespace Pastebook.Web
         {
 
             services.AddControllers();
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pastebook", Version = "v1" });
             });
             string connectionString = Configuration.GetValue<string>("ConnectionString");
             services.AddDbContext<PastebookContext>(options => options.UseSqlServer(connectionString));
+            
             services.AddScoped<IUserAccountRepository, UserAccountRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IAlbumRepository, AlbumRepository>();
+
             services.AddScoped<IUserAccountService, UserAccountService>();
             services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IAlbumService, AlbumService>();
+
             services.AddCors();
         }
 
@@ -54,7 +64,6 @@ namespace Pastebook.Web
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pastebook.Web v1"));
             }
-            //"http://localhost:4200"
             app.UseCors(options => 
             options.AllowAnyOrigin()
             .AllowAnyMethod()
@@ -65,6 +74,8 @@ namespace Pastebook.Web
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
