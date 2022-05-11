@@ -46,15 +46,38 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost, Route("/register")]
-        public IActionResult RegisterNewUser(UserAccount userAccount)
+        public async Task<IActionResult> RegisterNewUser([FromForm] UserAccount userAccount)
         {
             var newGuid = Guid.NewGuid();
             userAccount.UserAccountId = newGuid;
             userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
             var newPassword = _userAccountService.GetHashPassword(userAccount.Password,newGuid.ToString());
             userAccount.Password = newPassword;
-            var newUser = _userAccountService.Insert(userAccount);
+            var newUser = await _userAccountService.Insert(userAccount);
             return StatusCode(StatusCodes.Status201Created, newUser);
+        }
+
+        [HttpGet, Route("/search")]
+        public IActionResult SearchName([FromQuery] string searchName)
+        {
+            var usersFound = _userAccountService.FindByName(searchName);
+            return StatusCode(StatusCodes.Status200OK, usersFound);
+        }
+
+        [HttpPost, Route("/setting/{id:Guid}")]
+        public async Task<IActionResult> UpdateRegistrationInfo([FromRoute]Guid id, UserAccount userAccount)
+        {
+            if(id != userAccount.UserAccountId)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _userAccountService.Update(userAccount);
+                return StatusCode(StatusCodes.Status202Accepted, userAccount);
+            }
+            return BadRequest();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Pastebook.Data.Repositories
         public string GetHash(string password, string salt);
         public CredentialDTO FindByEmail(string email);
         public bool FindEmail(string email);
+        public IEnumerable<UserAccount> FindByName(string searchName);
     }
     public class UserAccountRepository : GenericRepository<UserAccount>, IUserAccountRepository
     {
@@ -89,6 +90,15 @@ namespace Pastebook.Data.Repositories
                 .Where(e => e.Email.Equals(email))
                 .FirstOrDefault();
             return userAccount;
+        }
+
+        public IEnumerable<UserAccount> FindByName(string searchName)
+        {
+            var usersWithSearchName = this.Context.UserAccounts
+                .Where(u => u.FirstName.Contains(searchName) || u.LastName.Contains(searchName))
+                .ToList();
+
+            return usersWithSearchName;
         }
     }
 }
