@@ -41,7 +41,7 @@ namespace Pastebook.Web.Controllers
             //    PostPhotoPath = "mikko.dacasin.jpg",
             //};
 
-            var add = _postService.Insert(post);
+            var add = await _postService.Insert(post);
             return StatusCode(StatusCodes.Status201Created, add);
         }
 

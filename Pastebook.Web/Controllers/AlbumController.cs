@@ -39,7 +39,7 @@ namespace Pastebook.Web.Controllers
                 UserAccountId = Guid.Parse(userAccountId)
             };
 
-            var newAlbum = _albumService.Insert(album);
+            var newAlbum = await _albumService.Insert(album);
             if(newAlbum != null)
             {
                 return StatusCode(StatusCodes.Status201Created, newAlbum);
