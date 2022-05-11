@@ -46,7 +46,7 @@ namespace Pastebook.Web.Controllers
             }
         }
 
-        [HttpPost, Route("/register")]
+        [HttpPost, Route("register")]
         public async Task<IActionResult> RegisterNewUser([FromForm] UserAccount userAccount)
         {
             if(userAccount.Password.Length < 6)
@@ -66,7 +66,7 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status201Created, newUser);
         }
 
-        [HttpGet, Route("/search")]
+        [HttpGet, Route("search")]
         public async Task<IActionResult> SearchName([FromQuery] string searchName)
         {
             if (string.IsNullOrWhiteSpace(Request.Query["searchName"]))
@@ -78,7 +78,7 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status200OK, usersFound);
         }
 
-        [HttpPut, Route("/setting")]
+        [HttpPut, Route("setting")]
         public async Task<IActionResult> UpdateRegistrationInfo(UserAccount userAccount)
         {
             var sessionId = HttpContext.Session.GetString("userAccountId");
