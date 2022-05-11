@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Pastebook.Data.Models.DataTransferObjects;
 
 namespace Pastebook.Web.Services
 {
@@ -14,9 +15,9 @@ namespace Pastebook.Web.Services
         public string CreateUsername(string firstName, string lastName);
         public string CheckUsernameExist(string concattedName);
         public string GetHashPassword(string password, string salt);
-        public UserAccount Insert(UserAccount userAccount);
-
-
+        public Task<UserAccount> Insert(UserAccount userAccount);
+        public bool FindEmail(string email);
+        public CredentialDTO FindByEmail(string email);
     }
     public class UserAccountService: IUserAccountService
     {
@@ -51,9 +52,18 @@ namespace Pastebook.Web.Services
             return _userAccountRepository.GetHash(password, salt);
         }
 
-        public UserAccount Insert(UserAccount userAccount)
+        public async Task<UserAccount> Insert(UserAccount userAccount)
         {
-            return _userAccountRepository.Insert(userAccount);
+            return await _userAccountRepository.Insert(userAccount);
+        }
+
+        public bool FindEmail(string email)
+        {
+            return _userAccountRepository.FindEmail(email);
+        }
+        public CredentialDTO FindByEmail(string email)
+        {
+            return _userAccountRepository.FindByEmail(email);
         }
     }
 }
