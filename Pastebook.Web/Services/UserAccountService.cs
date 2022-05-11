@@ -16,6 +16,7 @@ namespace Pastebook.Web.Services
         public string CheckUsernameExist(string concattedName);
         public string GetHashPassword(string password, string salt);
         public Task<UserAccount> Insert(UserAccount userAccount);
+        public Task<UserAccount> Update(UserAccount _userAccount);
         public bool FindEmail(string email);
         public CredentialDTO FindByEmail(string email);
         public IEnumerable<UserAccount> FindByName(string searchName);
@@ -58,6 +59,12 @@ namespace Pastebook.Web.Services
         {
             return await _userAccountRepository.Insert(userAccount);
         }
+
+        public async Task<UserAccount> Update(UserAccount _userAccount)
+        {
+            return await _userAccountRepository.Update(_userAccount);
+        }
+
 
         public bool FindEmail(string email)
         {
