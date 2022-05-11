@@ -27,25 +27,27 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/upload/{objectFile}")]
+        [Route("upload")]
         public string Upload([FromForm] FileUpload objectFile)
         {
             try
             {
                 if (objectFile.files.Length > 0)
                 {
-                    string path = _webHostEnvironment.WebRootPath + "\\uploads\\";
+                    var username = HttpContext.Session.GetString("username");
+                    string path = $@"{_webHostEnvironment.WebRootPath}\{username}\postPicture\";
 
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
                     }
-                    using (FileStream fileStream = System.IO.File.Create(path + objectFile.files.FileName))
+                    using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
                     {
                         objectFile.files.CopyTo(fileStream);
                         fileStream.Flush();
                         return "Uploaded";
                     }
+
                 }
             }
             catch (Exception ex)
