@@ -20,7 +20,6 @@ namespace Pastebook.Web.Services
         public bool FindEmail(string email);
         public CredentialDTO FindByEmail(string email);
         public IEnumerable<UserAccount> FindByName(string searchName);
-        public Task<UserAccount> Update(UserAccount userAccount);
     }
     public class UserAccountService: IUserAccountService
     {
