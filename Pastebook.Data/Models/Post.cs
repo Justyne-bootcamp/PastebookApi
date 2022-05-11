@@ -18,6 +18,7 @@ namespace Pastebook.Data.Models
         public string TextContent { get; set; }
         public string PostPhotoPath { get; set; }
         public DateTime TimeStamp { get; set; }
+        public Guid PostLocation { get; set; }
 
         public virtual UserAccount UserAccount { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
