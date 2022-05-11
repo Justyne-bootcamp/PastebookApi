@@ -42,9 +42,9 @@ namespace Pastebook.Web.Services
             return await _postRepository.Update(_post);
         }
 
-        public Task<Post> Delete(Guid id)
+        public async Task<Post> Delete(Guid id)
         {
-            return _postRepository.Delete(id);
+            return await _postRepository.Delete(id);
         }
     }
 }

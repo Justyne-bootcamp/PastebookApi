@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Pastebook.Data\Pastebook.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwRoot\" />
+  </ItemGroup>
+
 </Project>

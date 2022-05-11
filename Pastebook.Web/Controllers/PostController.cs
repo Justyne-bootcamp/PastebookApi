@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Models;
 using Pastebook.Web.Http;
+using Pastebook.Web.Models;
 using Pastebook.Web.Services;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Pastebook.Web.Controllers
@@ -14,11 +17,43 @@ namespace Pastebook.Web.Controllers
     {
         private readonly IPostService _postService;
         private readonly IUserAccountService _userAccountService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public PostController(IPostService PostService, IUserAccountService userAccountService)
+        public PostController(IPostService PostService, IUserAccountService userAccountService, IWebHostEnvironment webHostEnvironment)
         {
             _postService = PostService;
             _userAccountService = userAccountService;
+            _webHostEnvironment = webHostEnvironment;
+        }
+
+        [HttpPost]
+        [Route("/upload/{objectFile}")]
+        public string Upload([FromForm] FileUpload objectFile)
+        {
+            try
+            {
+                if (objectFile.files.Length > 0)
+                {
+                    string path = _webHostEnvironment.WebRootPath + "\\uploads\\";
+
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    using (FileStream fileStream = System.IO.File.Create(path + objectFile.files.FileName))
+                    {
+                        objectFile.files.CopyTo(fileStream);
+                        fileStream.Flush();
+                        return "Uploaded";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return ex.Message;
+            }
+            return "Okay";
         }
 
         [HttpGet]
@@ -41,7 +76,7 @@ namespace Pastebook.Web.Controllers
             //    PostPhotoPath = "mikko.dacasin.jpg",
             //};
 
-            var add = _postService.Insert(post);
+            var add = await _postService.Insert(post);
             return StatusCode(StatusCodes.Status201Created, add);
         }
 
