@@ -64,7 +64,7 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPut]
-        [Route("/aboutme/{aboutMe}")]
+        [Route("aboutme/{aboutMe}")]
 
         public async Task<IActionResult> AddAboutMe(string aboutMe)
         {
