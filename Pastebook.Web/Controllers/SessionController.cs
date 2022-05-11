@@ -52,14 +52,13 @@ namespace Pastebook.Web.Controllers
             var user = _userAccountService.FindByEmail(email);
             if (user.Password.Equals(password))
             {
-                var username = user.FirstName + user.LastName;
                 HttpContext.Session.SetString("username", user.Username);
                 HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());
                 return StatusCode(
                     StatusCodes.Status200OK,
                     new HttpResponseResult()
                     {
-                        Message = user.Username + " " + HttpContext.Session.GetString("userAccountId"),
+                        Message = user.Username,
                         StatusCode = StatusCodes.Status200OK
                     });
             }
