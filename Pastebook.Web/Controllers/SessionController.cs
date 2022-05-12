@@ -44,6 +44,7 @@ namespace Pastebook.Web.Controllers
                     });
             }
         }
+        //for stage only
         [HttpPost]
         [Route("password/{password}")]
         public IActionResult LoginPassword(string password)

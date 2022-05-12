@@ -76,7 +76,6 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPut]
-        //[Route("respondToRequest/{response}")]
         [Route("respondToRequest")]
         public async Task<IActionResult> RespondToRequest()
         {
