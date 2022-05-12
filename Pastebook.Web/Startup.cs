@@ -48,11 +48,13 @@ namespace Pastebook.Web
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IAlbumRepository, AlbumRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IFriendRepository, FriendRepository>();
 
             services.AddScoped<IUserAccountService, UserAccountService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IAlbumService, AlbumService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IFriendService, FriendService>();
 
             services.AddCors();
         }

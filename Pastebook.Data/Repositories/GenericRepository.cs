@@ -47,7 +47,7 @@ namespace Pastebook.Data.Repositories
 
         public async Task<T> Insert(T entity)
         {
-            Context.AddAsync<T>(entity);
+            await Context.AddAsync<T>(entity);
             Context.SaveChanges();
             return entity;
         }
