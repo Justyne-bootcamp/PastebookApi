@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Pastebook.Data.Models;
 using Pastebook.Web.Services;
 using System;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Pastebook.Web.Controllers
     [ApiController]
     public class LikeController : Controller
     {
-        private readonly ILikeService _likeService; 
+        private readonly ILikeService _likeService;
         public LikeController(ILikeService likeService)
         {
             _likeService = likeService;
@@ -24,20 +25,25 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> LikePost([FromRoute] Guid postId)
         {
             var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var like = _likeService.IsPostLiked(sessionId, postId);
-            if(like == null)
+            var likePost = _likeService.GetLikeByPostIdAndUserId(sessionId, postId);
+            if (likePost == null)
             {
-                like.UserAccountId = sessionId;
-                like.PostId = postId;
-                await _likeService.Insert(like);
-                return StatusCode(StatusCodes.Status201Created, like);
+                var newLike = new Like()
+                {
+                    LikeId = Guid.NewGuid(),
+                    PostId = postId,
+                    UserAccountId = sessionId
+                };
+                await _likeService.Insert(newLike);
+                return StatusCode(StatusCodes.Status201Created, likePost);
             }
-            if(like != null)
+            if(likePost != null)
             {
-                await _likeService.Delete(like.LikeId);
-                return StatusCode(StatusCodes.Status202Accepted, like);
+                await _likeService.Delete(likePost.LikeId);
+                return StatusCode(StatusCodes.Status202Accepted, likePost);
             }
-            return StatusCode(StatusCodes.Status400BadRequest);
+            return StatusCode(StatusCodes.Status400BadRequest, likePost);
+
         }
     }
 }

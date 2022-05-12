@@ -10,12 +10,18 @@ namespace Pastebook.Web.Services
     {
         public Task<Like> Insert(Like like);
         public Task<Like> Delete(Guid likeId);
-        public IEnumerable<Like> GetLikesByPostId(Guid postId);
-        public Like IsPostLiked(Guid userAccountId, Guid postId);
+        public Like GetLikeByPostIdAndUserId(Guid userAccountId, Guid postId);
+        public IEnumerable<Like> GetAllLikesByPostId(Guid postId);
+        public bool IsPostLiked(Guid userAccountId, Guid postId);
     }
     public class LikeService : ILikeService
     {
-        private readonly ILikeRepository _likeRepository;
+        private ILikeRepository _likeRepository;
+
+        public LikeService(ILikeRepository likeRepository)
+        {
+            _likeRepository = likeRepository;
+        }
 
         public Task<Like> Insert(Like like)
         {
@@ -26,12 +32,17 @@ namespace Pastebook.Web.Services
             return _likeRepository.Delete(likeId);
         }
 
-        public IEnumerable<Like> GetLikesByPostId(Guid postId)
+        public Like GetLikeByPostIdAndUserId(Guid userAccountId, Guid postId)
         {
-            return _likeRepository.GetLikesByPostId(postId);
+            return _likeRepository.GetLikeByPostIdAndUserId(userAccountId, postId);
         }
 
-        public Like IsPostLiked(Guid userAccountId, Guid postId)
+        public IEnumerable<Like> GetAllLikesByPostId(Guid postId)
+        {
+            return _likeRepository.GetAllLikesByPostId(postId);
+        }
+
+        public bool IsPostLiked(Guid userAccountId, Guid postId)
         {
             return _likeRepository.IsPostLiked(userAccountId, postId);
         }
