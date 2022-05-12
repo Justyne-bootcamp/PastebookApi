@@ -38,39 +38,44 @@ namespace Pastebook.Web.Controllers
         {
             try
             {
-                var albumId = Guid.Parse("7F337946-4B99-4739-BFF3-3955699B4622");
-                var albumName = "someAlbumName";
-                var userName = "user1";
-                if (objectFile.files.Length > 0)
+                var albumId = Guid.Parse("9A71DA21-2237-4875-8FDC-294DD64D2FBD");
+                var albumName = "Album1";
+                var userName = HttpContext.Session.GetString("username");
+                if(objectFile != null)
                 {
-                    string path = $@"{_webHostEnvironment.WebRootPath}\{userName}\{albumName}\";
+                    if (objectFile.files.Length > 0)
+                    {
+                        string path = $@"{_webHostEnvironment.WebRootPath}\{userName}\{albumName}\";
 
-                    if (!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                    using (FileStream fileStream = System.IO.File.Create(path + objectFile.files.FileName))
-                    {
-                        objectFile.files.CopyTo(fileStream);
-                        fileStream.Flush();
-                    }
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
+                        {
+                            objectFile.files.CopyTo(fileStream);
+                            fileStream.Flush();
+                        }
 
-                    var albumPhoto = new AlbumPhoto()
-                    {
-                        AlbumPhotoId = Guid.NewGuid(),
-                        AlbumId = albumId,
-                        AlbumPhotoPath = $@"\wwwroot\{userName}\{albumName}\{objectFile.files.FileName}"
-                    };
-                    var newAlbumPhoto = await _albumPhotoService.Insert(albumPhoto);
-                    return StatusCode(StatusCodes.Status200OK, newAlbumPhoto);
+                        var albumPhoto = new AlbumPhoto()
+                        {
+                            AlbumPhotoId = Guid.NewGuid(),
+                            AlbumId = albumId,
+                            AlbumPhotoPath = $@"{userName}\{albumName}\{DateTime.Now.ToString("yyyyMMddhhmmss")}"
+                        };
+                        var newAlbumPhoto = await _albumPhotoService.Insert(albumPhoto);
+                        return StatusCode(StatusCodes.Status200OK, newAlbumPhoto);
+                    }
+                    
                 }
                 return StatusCode(
-                        StatusCodes.Status400BadRequest,
-                        new HttpResponseError()
-                        {
-                            Message = "No Image Found.",
-                            StatusCode = StatusCodes.Status400BadRequest
-                        });
+                            StatusCodes.Status400BadRequest,
+                            new HttpResponseError()
+                            {
+                                Message = "No Image Found.",
+                                StatusCode = StatusCodes.Status400BadRequest
+                            });
+
             }
             catch (Exception ex)
             {
@@ -78,7 +83,7 @@ namespace Pastebook.Web.Controllers
                         StatusCodes.Status400BadRequest,
                         new HttpResponseError()
                         {
-                            Message = "Invalid image extension.",
+                            Message = "No Image Found.",
                             StatusCode = StatusCodes.Status400BadRequest
                         });
             }
@@ -88,6 +93,7 @@ namespace Pastebook.Web.Controllers
         [Route("/delete/{albumPhotoId:Guid}")]
         public async Task<IActionResult> Delete(Guid albumPhotoId)
         {
+            var deleteAlbumPhoto = await _albumPhotoService.SystemPhotoDelete(albumPhotoId);
             var albumPhoto = await _albumPhotoService.Delete(albumPhotoId);
             return StatusCode(StatusCodes.Status200OK, albumPhoto);
         }
