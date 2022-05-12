@@ -50,7 +50,8 @@ namespace Pastebook.Web.Controllers
         {
             var email = HttpContext.Session.GetString("email");
             var user = _userAccountService.FindByEmail(email);
-            if (user.Password.Equals(password))
+            var hashedPassword = _userAccountService.GetHashPassword(password, user.UserAccountId.ToString());
+            if (user.Password.Equals(hashedPassword))
             {
                 HttpContext.Session.SetString("username", user.Username);
                 HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());

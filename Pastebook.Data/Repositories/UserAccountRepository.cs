@@ -46,7 +46,7 @@ namespace Pastebook.Data.Repositories
                     return concattedName+disambiguator;
                 }
             }
-            return concattedName;
+            return concattedName+1;
         }
 
         public string GetHash(string password, string salt)
