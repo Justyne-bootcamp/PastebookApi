@@ -50,6 +50,7 @@ namespace Pastebook.Web
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IFriendRepository, FriendRepository>();
             services.AddScoped<IAlbumPhotoRepository, AlbumPhotoRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             services.AddScoped<IUserAccountService, UserAccountService>();
             services.AddScoped<IPostService, PostService>();
@@ -57,6 +58,7 @@ namespace Pastebook.Web
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IFriendService, FriendService>();
             services.AddScoped<IAlbumPhotoService, AlbumPhotoService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddCors();
         }

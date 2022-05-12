@@ -15,10 +15,12 @@ namespace Pastebook.Web.Controllers
     public class FriendController : Controller
     {
         private readonly IFriendService _friendService;
+        private readonly INotificationService _notificationService;
 
-        public FriendController(IFriendService friendService)
+        public FriendController(IFriendService friendService, INotificationService notificationService)
         {
             _friendService = friendService;
+            _notificationService = notificationService;
         }
 
         [HttpPost]
@@ -50,7 +52,7 @@ namespace Pastebook.Web.Controllers
         }
         [HttpPost]
         [Route("addFriend/{id:Guid}")]
-        public IActionResult AddFriend(Guid id)
+        public async Task<IActionResult> AddFriend(Guid id)
         {
             var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             Friend friend = new Friend()
@@ -60,8 +62,21 @@ namespace Pastebook.Web.Controllers
                 FriendRequestReceiver = id,
                 FriendRequestStatus = "Pending"
             };
+
+            Notification notification = new Notification()
+            {
+                NotificationId = Guid.NewGuid(),
+                TimeStamp = DateTime.Now,
+                NotificationStatus = "Unread",
+                NotificationType = "FriendRequest",
+                NotificationPath = "http://site/friends",
+                UserAccountId = id,
+                NotificationSourceId = userAccountId,
+            };
+
             var addedFriend = _friendService.AddFriend(friend);
-            if(addedFriend != null)
+            var notif = await _notificationService.Insert(notification);
+            if (addedFriend != null)
             {
                 return StatusCode(
                     StatusCodes.Status201Created, addedFriend);
