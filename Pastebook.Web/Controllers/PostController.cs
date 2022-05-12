@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Models;
+using Pastebook.Web.DataTransferObjects;
 using Pastebook.Web.Http;
 using Pastebook.Web.Models;
 using Pastebook.Web.Services;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Pastebook.Web.Controllers
@@ -18,23 +20,34 @@ namespace Pastebook.Web.Controllers
         private readonly IPostService _postService;
         private readonly IUserAccountService _userAccountService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFriendService _friendService;
+        private readonly ICommentService _commentService;
 
-        public PostController(IPostService PostService, IUserAccountService userAccountService, IWebHostEnvironment webHostEnvironment)
+        public PostController(IPostService PostService, IUserAccountService userAccountService, IWebHostEnvironment webHostEnvironment, IFriendService friendService, ICommentService commentService)
         {
             _postService = PostService;
             _userAccountService = userAccountService;
             _webHostEnvironment = webHostEnvironment;
+            _friendService = friendService;
+            _commentService = commentService;
         }
 
         [HttpPost]
-        [Route("upload")]
-        public string Upload([FromForm] FileUpload objectFile)
+        [Route("addPost")]
+        public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
-            try
+            //var userAccountId = Guid.Parse("C12E22E4-DA76-4E51-AEAB-52B6575C7658");
+            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var username = HttpContext.Session.GetString("username");
+            //var username = "ChesterSeda1";
+            var postPhotoPath = "";
+
+            if (postForm.Photo != null)
             {
-                if (objectFile.files.Length > 0)
+
+                if (postForm.Photo.files.Length > 0)
                 {
-                    var username = HttpContext.Session.GetString("username");
+                    postPhotoPath = $"{username}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}";
                     string path = $@"{_webHostEnvironment.WebRootPath}\{username}\postPicture\";
 
                     if (!Directory.Exists(path))
@@ -43,42 +56,26 @@ namespace Pastebook.Web.Controllers
                     }
                     using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
                     {
-                        objectFile.files.CopyTo(fileStream);
+                        postForm.Photo.files.CopyTo(fileStream);
                         fileStream.Flush();
-                        return "Uploaded";
                     }
-
                 }
             }
-            catch (Exception ex)
+           
+
+            var newPost = new Post
             {
+                UserAccountId = userAccountId,
+                PostId = Guid.NewGuid(),
+                TextContent = postForm.TextContent,
+                TimeStamp = DateTime.Now,
+                PostPhotoPath = postPhotoPath,
+                PostLocation = postForm.PostLocation //GUID depends in a user's timeline
+            };
 
-                return ex.Message;
-            }
-            return "Okay";
-        }
+            var add = await _postService.Insert(newPost);
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var post = await _postService.FindAll();
-            return StatusCode(StatusCodes.Status200OK, post);
-        }
-
-        [HttpPost]
-        [Route("/addPost/{post}")]
-        public async Task<IActionResult> AddPost(Post post)
-        {
-            //var post = new Post
-            //{
-            //    UserAccountId = Guid.Parse("F5D50E0B-D82C-4E06-BA17-BC142151CA5B"),
-            //    PostId = Guid.NewGuid(),
-            //    TextContent = "i am mikko ",
-            //    TimeStamp = DateTime.Now,
-            //    PostPhotoPath = "mikko.dacasin.jpg",
-            //};
-
-            var add = await _postService.Insert(post);
+            
             return StatusCode(StatusCodes.Status201Created, add);
         }
 
@@ -88,6 +85,23 @@ namespace Pastebook.Web.Controllers
         {
             var delete = await _postService.Delete(id);
             return StatusCode(StatusCodes.Status200OK, delete);
-        } 
+        }
+
+        [HttpGet]
+        [Route("newsfeed")]
+        public async Task<IActionResult> FindAllPost()
+        {
+
+            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var friends = _friendService.GetFriendsId(userAccountId).ToList();
+
+            friends.Add(userAccountId);
+
+            var newsfeed = _postService.GetAllNewsfeedPost(friends);
+
+            return StatusCode(StatusCodes.Status200OK, newsfeed);
+        }
+
+
     }
 }
