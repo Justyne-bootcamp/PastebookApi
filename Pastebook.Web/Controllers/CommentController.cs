@@ -12,12 +12,12 @@ namespace Pastebook.Web.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
-        private readonly IUserAccountService _userAccountService;
+        private readonly INotificationService _notificationService;
 
-        public CommentController(ICommentService CommentService, IUserAccountService userAccountService)
+        public CommentController(ICommentService CommentService, INotificationService notificationService)
         {
             _commentService = CommentService;
-            _userAccountService = userAccountService;
+            _notificationService = notificationService;
         }
 
         [HttpGet]
@@ -31,7 +31,20 @@ namespace Pastebook.Web.Controllers
         [Route("/addComment/{comment}")]
         public async Task<IActionResult> AddComment(Comment comment)
         {
+            Notification notification = new Notification()
+            {
+                NotificationId = Guid.NewGuid(),
+                TimeStamp = DateTime.Now,
+                NotificationStatus = "Unread",
+                NotificationType = "Post",
+                NotificationPath = $@"http://site/posts/{comment.PostId}",
+                UserAccountId = Guid.NewGuid(),//dummy account Id for now. must get this from UI together with the postId
+                NotificationSourceId = (Guid)comment.UserAccountId,
+            };
+
             var add = await _commentService.Insert(comment);
+            var notif = await _notificationService.Insert(notification);
+
             return StatusCode(StatusCodes.Status201Created, add);
         }
 
