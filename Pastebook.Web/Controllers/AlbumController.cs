@@ -20,7 +20,6 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpGet]
-        [Route("/Index")]
         public async Task<IActionResult> Index()
         {
             var album = await _albumService.FindAll();
