@@ -6,7 +6,6 @@ namespace Pastebook.Web.Models
 {
     public class FileUpload
     {
-        [Required]
         [DataType(DataType.Upload)]
         [AllowedExtensions(new string[] {".jpg", ".jpeg", ".png"})]
 

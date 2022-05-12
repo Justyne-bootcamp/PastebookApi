@@ -13,6 +13,7 @@ namespace Pastebook.Data.Repositories
     {
         public IEnumerable<FriendDTO> GetAddedFriends(Guid userAccountId, string status);
         public IEnumerable<FriendDTO> GetFriendRequests(Guid userAccountId, string status);
+        public IEnumerable<Guid> GetFriendsId(Guid userAccountId);
     }
     public class FriendRepository : GenericRepository<Friend>, IFriendRepository
     {
@@ -60,6 +61,30 @@ namespace Pastebook.Data.Repositories
                 .ToList();
 
             return friends;
+        }
+
+        public IEnumerable<Guid> GetFriendsId(Guid userAccountId)
+        {
+            var addedFriends = this.Context.Friends.Select(e => e)
+                .Where(e => e.FriendRequestSender.Equals(userAccountId) && e.FriendRequestStatus.Equals("Accepted"))
+                .ToList();
+
+            var friendsAddedYou = this.Context.Friends.Select(e => e)
+                .Where(e => e.FriendRequestReceiver.Equals(userAccountId) && e.FriendRequestStatus.Equals("Accepted"))
+                .ToList();
+            var friendsIdList = new List<Guid>();
+
+            foreach (var friend in addedFriends)
+            {
+                friendsIdList.Add(friend.FriendRequestReceiver);
+            }
+
+            foreach (var friend in friendsAddedYou)
+            {
+                friendsIdList.Add(friend.FriendRequestSender);
+            }
+
+            return friendsIdList;
         }
     }
 }

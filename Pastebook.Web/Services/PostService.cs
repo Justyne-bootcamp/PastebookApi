@@ -1,4 +1,5 @@
 ﻿using Pastebook.Data.Models;
+using Pastebook.Data.Models.DataTransferObjects;
 using Pastebook.Data.Repositories;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Pastebook.Web.Services
         public Task<Post> Insert(Post _post);
         public Task<Post> Update(Post _post);
         public Task<Post> Delete(Guid id);
+        public IEnumerable<PostDTO> GetAllNewsfeedPost(List<Guid> friendsList);
     }
     public class PostService : IPostService
     {
@@ -45,6 +47,11 @@ namespace Pastebook.Web.Services
         public async Task<Post> Delete(Guid id)
         {
             return await _postRepository.Delete(id);
+        }
+
+        public IEnumerable<PostDTO> GetAllNewsfeedPost(List<Guid> friendsList)
+        {
+            return _postRepository.GetAllNewsfeedPost(friendsList);
         }
     }
 }
