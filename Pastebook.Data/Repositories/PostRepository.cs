@@ -33,11 +33,11 @@ namespace Pastebook.Data.Repositories
                     PostId = post.PostId,
                     TextContent = post.TextContent,
                     TimeStamp = post.TimeStamp,
-                    //PostLocation = post.PostLocation,
+                    PostLocation = post.PostLocation,
                     FirstName = user.FirstName,
-                    LastName = user.LastName
-                    //PostPhotoPath = post.PostPhotoPath,
-                    //ProfilePhotoPath = user.ProfilePhotoPath
+                    LastName = user.LastName,
+                    PostPhotoPath = post.PostPhotoPath,
+                    ProfilePhotoPath = user.ProfilePhotoPath
                 })
 
             .Where(u => friendsList.Contains(u.UserAccountId))
