@@ -53,15 +53,11 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost, Route("register")]
-        public async Task<IActionResult> RegisterNewUser([FromForm] UserAccount userAccount)
+        public async Task<IActionResult> RegisterNewUser([FromBody] UserAccount userAccount)
         {
             if (userAccount.Password.Length < 6)
             {
                 throw new InvalidRegistrationException("Password length should be more than 6");
-            }
-            if (_userAccountService.FindEmail(userAccount.Email))
-            {
-                throw new InvalidRegistrationException("Email already in used. Try a different email.");
             }
             var newGuid = Guid.NewGuid();
             userAccount.UserAccountId = newGuid;
