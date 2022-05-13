@@ -4,6 +4,7 @@ using Pastebook.Data.Models;
 using Pastebook.Web.Services;
 using System;
 using System.Threading.Tasks;
+using Pastebook.Web.DataTransferObjects;
 
 namespace Pastebook.Web.Controllers
 {
@@ -22,29 +23,29 @@ namespace Pastebook.Web.Controllers
             _postService = postService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var comment = await _commentService.FindAll();
-            return StatusCode(StatusCodes.Status200OK, comment);
-        }
-
         [HttpPost]
-        [Route("/addComment/{comment}")]
-        public async Task<IActionResult> AddComment(Comment comment)
+        [Route("addComment")]
+        public async Task<IActionResult> AddComment([FromForm] CommentFormDTO commentForm)
         {
-            var posterId = _postService.GetUserAccountIdByPost(comment.PostId);
+            var posterId = _postService.GetUserAccountIdByPost(commentForm.PostId);
+            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             Notification notification = new Notification()
             {
                 NotificationId = Guid.NewGuid(),
                 TimeStamp = DateTime.Now,
                 NotificationStatus = "Unread",
                 NotificationType = "Comment",
-                NotificationPath = $@"http://site/posts/{comment.PostId}",
+                NotificationPath = $@"http://site/posts/{commentForm.PostId}",
                 UserAccountId = posterId,
-                NotificationSourceId = (Guid)comment.UserAccountId,
+                NotificationSourceId = userAccountId,
             };
-
+            var comment = new Comment()
+            {
+                CommentId = Guid.NewGuid(),
+                PostId = commentForm.PostId,
+                CommentContent = commentForm.CommentContent,
+                UserAccountId =  userAccountId
+            };
             var add = await _commentService.Insert(comment);
             var notif = await _notificationService.Insert(notification);
 
@@ -52,7 +53,7 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpDelete]
-        [Route("/deleteComment/{id:Guid}")]
+        [Route("deleteComment/{id:Guid}")]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
             var delete = await _commentService.Delete(id);
