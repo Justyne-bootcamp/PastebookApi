@@ -14,6 +14,6 @@ namespace Pastebook.Data.Models
         public string AlbumPhotoPath { get; set; }
         //FK
         public Guid AlbumId { get; set; }
-        public virtual Album Album { get; set; }
+        public  Album Album { get; set; }
     }
 }
