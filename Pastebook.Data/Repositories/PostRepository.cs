@@ -13,6 +13,7 @@ namespace Pastebook.Data.Repositories
     public interface IPostRepository : IBaseRepository<Post>
     {
         public IEnumerable<PostDTO> GetAllNewsfeedPost(List<Guid> friendsList);
+        public Guid GetUserAccountIdByPost(Guid postId);
     }
     public class PostRepository : GenericRepository<Post>, IPostRepository
     {
@@ -47,6 +48,16 @@ namespace Pastebook.Data.Repositories
 
 
             return allPosts;
+        }
+
+        public Guid GetUserAccountIdByPost(Guid postId)
+        {
+            var accountId = this.Context.Posts
+                .Select(e => new { e.PostId, e.UserAccountId })
+                .Where(u => u.PostId == postId)
+                .FirstOrDefault();
+
+            return accountId.UserAccountId;
         }
     }
 }

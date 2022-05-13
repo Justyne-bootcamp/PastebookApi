@@ -12,14 +12,14 @@ namespace Pastebook.Web.Controllers
     public class LikeController : Controller
     {
         private readonly ILikeService _likeService;
-        public LikeController(ILikeService likeService)
+        private readonly IPostService _postService;
+        private readonly INotificationService _notificationService;
+        public LikeController(ILikeService likeService, IPostService postService, INotificationService notificationService)
         {
             _likeService = likeService;
+            _postService = postService;
+            _notificationService = notificationService;
         }
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
         [HttpPost, Route("{postId:Guid}")]
         public async Task<IActionResult> LikePost([FromRoute] Guid postId)
@@ -34,7 +34,19 @@ namespace Pastebook.Web.Controllers
                     PostId = postId,
                     UserAccountId = sessionId
                 };
+                var posterId = _postService.GetUserAccountIdByPost(postId);
+                Notification notification = new Notification()
+                {
+                    NotificationId = Guid.NewGuid(),
+                    TimeStamp = DateTime.Now,
+                    NotificationStatus = "Unread",
+                    NotificationType = "Like",
+                    NotificationPath = $@"http://site/posts/{postId}",
+                    UserAccountId = posterId,
+                    NotificationSourceId = sessionId,
+                };
                 await _likeService.Insert(newLike);
+                var notif = await _notificationService.Insert(notification);
                 return StatusCode(StatusCodes.Status201Created, likePost);
             }
             if(likePost != null)
