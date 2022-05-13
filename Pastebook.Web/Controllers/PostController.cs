@@ -36,25 +36,23 @@ namespace Pastebook.Web.Controllers
         [Route("addPost")]
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
-            //var userAccountId = Guid.Parse("C12E22E4-DA76-4E51-AEAB-52B6575C7658");
             var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             var username = HttpContext.Session.GetString("username");
-            //var username = "ChesterSeda1";
             var postPhotoPath = "";
-
             if (postForm.Photo != null)
             {
-
                 if (postForm.Photo.files.Length > 0)
                 {
-                    postPhotoPath = $"{username}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}";
+                    FileInfo file = new FileInfo(postForm.Photo.files.FileName);
+                    var ext = file.Extension;
+                    postPhotoPath = $"{username}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}+{ext}";
                     string path = $@"{_webHostEnvironment.WebRootPath}\{username}\postPicture\";
 
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
                     }
-                    using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
+                    using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss") + ext))
                     {
                         postForm.Photo.files.CopyTo(fileStream);
                         fileStream.Flush();
