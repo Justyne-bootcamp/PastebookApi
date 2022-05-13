@@ -13,7 +13,11 @@ namespace Pastebook.Data.Models
         public string NotificationStatus { get; set; }
         public string NotificationType { get; set; }
         public string NotificationPath { get; set; }
-        public Guid UserAccountId { get; set; }
         public Guid NotificationSourceId { get; set; }
+
+        //FK
+
+        public Guid UserAccountId { get; set; }
+        public UserAccount UserAccount { get; set; }
     }
 }

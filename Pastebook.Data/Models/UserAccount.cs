@@ -43,5 +43,6 @@ namespace Pastebook.Data.Models
         public ICollection<Like> Likes { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<Album> Albums { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
     }
 }
