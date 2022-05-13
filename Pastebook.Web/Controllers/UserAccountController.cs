@@ -102,9 +102,9 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPut]
-        [Route("aboutme/{aboutMe}")]
+        [Route("aboutme")]
 
-        public async Task<IActionResult> AddAboutMe(string aboutMe)
+        public async Task<IActionResult> AddAboutMe([FromForm] string aboutMe)
         {
 
             var userAccountId = HttpContext.Session.GetString("userAccountId");

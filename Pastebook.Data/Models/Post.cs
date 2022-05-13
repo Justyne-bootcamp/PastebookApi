@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -13,15 +14,21 @@ namespace Pastebook.Data.Models
             Likes = new HashSet<Like>();
         }
 
+        [Key]
         public Guid PostId { get; set; }
-        public Guid UserAccountId { get; set; }
         public string TextContent { get; set; }
         public string PostPhotoPath { get; set; }
+        [Required]
         public DateTime TimeStamp { get; set; }
+        [Required]
         public Guid PostLocation { get; set; }
 
-        public virtual UserAccount UserAccount { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Like> Likes { get; set; }
+        //FK
+        public Guid UserAccountId { get; set; }
+        public UserAccount UserAccount { get; set; }
+
+        //Relationship
+        public ICollection<Like> Likes { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }

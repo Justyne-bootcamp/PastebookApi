@@ -11,12 +11,14 @@ namespace Pastebook.Data.Models
         {
             AlbumPhotos = new HashSet<AlbumPhoto>();
         }
-
         public Guid AlbumId { get; set; }
         public string AlbumName { get; set; }
-        public Guid UserAccountId { get; set; }
 
+        //FK
+        public Guid UserAccountId { get; set; }
         public virtual UserAccount UserAccount { get; set; }
+
+        //Relationship
         public virtual ICollection<AlbumPhoto> AlbumPhotos { get; set; }
     }
 }
