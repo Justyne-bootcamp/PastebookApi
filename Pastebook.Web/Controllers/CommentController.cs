@@ -24,7 +24,7 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/addComment")]
+        [Route("addComment")]
         public async Task<IActionResult> AddComment([FromForm] CommentFormDTO commentForm)
         {
             var posterId = _postService.GetUserAccountIdByPost(commentForm.PostId);
@@ -53,7 +53,7 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpDelete]
-        [Route("/deleteComment/{id:Guid}")]
+        [Route("deleteComment/{id:Guid}")]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
             var delete = await _commentService.Delete(id);
