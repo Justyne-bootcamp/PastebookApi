@@ -89,7 +89,7 @@ namespace Pastebook.Web.Controllers
 
         [HttpGet]
         [Route("newsfeed")]
-        public async Task<IActionResult> FindAllPost()
+        public async Task<IActionResult> GetNewsFeed()
         {
 
             var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
@@ -100,6 +100,19 @@ namespace Pastebook.Web.Controllers
             var newsfeed = _postService.GetAllNewsfeedPost(friends);
 
             return StatusCode(StatusCodes.Status200OK, newsfeed);
+        }
+
+        [HttpGet]
+        [Route("timeline")]
+        public async Task<IActionResult> GetTimeline()
+        {
+            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var posts = _postService.GetTimelinePosts(userAccountId);
+            if(posts != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, posts);
+            }
+            return StatusCode(StatusCodes.Status200OK, new Post());
         }
 
 

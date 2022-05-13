@@ -14,6 +14,7 @@ namespace Pastebook.Data.Repositories
     {
         public IEnumerable<PostDTO> GetAllNewsfeedPost(List<Guid> friendsList);
         public Guid GetUserAccountIdByPost(Guid postId);
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId);
     }
     public class PostRepository : GenericRepository<Post>, IPostRepository
     {
@@ -48,6 +49,32 @@ namespace Pastebook.Data.Repositories
 
 
             return allPosts;
+        }
+
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId)
+        {
+            var timeListPosts = this.Context.Posts.Join(
+                this.Context.UserAccounts,
+                post => post.UserAccountId,
+                user => user.UserAccountId,
+                (post, user) => new PostDTO
+                {
+                    UserAccountId = post.UserAccountId,
+                    PostId = post.PostId,
+                    TextContent = post.TextContent,
+                    TimeStamp = post.TimeStamp,
+                    PostLocation = post.PostLocation,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PostPhotoPath = post.PostPhotoPath,
+                    ProfilePhotoPath = user.ProfilePhotoPath
+                })
+
+            .Where(u => u.PostLocation.Equals(userAccountId))
+            .OrderByDescending(u => u.TimeStamp)
+            .ToList();
+
+            return timeListPosts;
         }
 
         public Guid GetUserAccountIdByPost(Guid postId)
