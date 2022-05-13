@@ -58,7 +58,7 @@ namespace Pastebook.Web.Controllers
             Friend friend = new Friend()
             {
                 FriendId = Guid.NewGuid(),
-                FriendRequestSender = userAccountId,
+                UserAccountId = userAccountId,
                 FriendRequestReceiver = id,
                 FriendRequestStatus = "Pending"
             };
@@ -91,12 +91,12 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPut]
-        [Route("respondToRequest")]
-        public async Task<IActionResult> RespondToRequest()
+        [Route("respondToRequest/{friendId:Guid}")]
+        public async Task<IActionResult> RespondToRequest([FromRoute] Guid friendId) 
         {
             FriendRequestResponseDTO response = new FriendRequestResponseDTO()
             {
-                FriendId = Guid.Parse("4724E6EA-D440-4DD6-95D6-E1CCD219797D"),
+                FriendId = friendId,
                 Response = "Accepted"
             };
             var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));

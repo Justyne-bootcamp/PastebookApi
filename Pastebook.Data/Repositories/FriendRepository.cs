@@ -30,13 +30,13 @@ namespace Pastebook.Data.Repositories
                 {
                     FriendId = f.FriendId,
                     FriendRequestReceiver = f.FriendRequestReceiver,
-                    FriendRequestSender = f.FriendRequestSender,
+                    UserAccountId = f.UserAccountId,
                     FriendRequestStatus = f.FriendRequestStatus,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     ProfilePhotoPath = u.ProfilePhotoPath,
                 })
-                .Where(e => e.FriendRequestSender.Equals(userAccountId) && e.FriendRequestStatus.Equals(status))
+                .Where(e => e.UserAccountId.Equals(userAccountId) && e.FriendRequestStatus.Equals(status))
                 .ToList();
 
             return friends;
@@ -45,13 +45,13 @@ namespace Pastebook.Data.Repositories
         {
             var friends = this.Context.Friends.Join(
                 this.Context.UserAccounts,
-                f => f.FriendRequestSender,
+                f => f.UserAccountId,
                 u => u.UserAccountId,
                 (f, u) => new FriendDTO
                 {
                     FriendId = f.FriendId,
                     FriendRequestReceiver = f.FriendRequestReceiver,
-                    FriendRequestSender = f.FriendRequestSender,
+                    UserAccountId = f.UserAccountId,
                     FriendRequestStatus = f.FriendRequestStatus,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
@@ -66,7 +66,7 @@ namespace Pastebook.Data.Repositories
         public IEnumerable<Guid> GetFriendsId(Guid userAccountId)
         {
             var addedFriends = this.Context.Friends.Select(e => e)
-                .Where(e => e.FriendRequestSender.Equals(userAccountId) && e.FriendRequestStatus.Equals("Accepted"))
+                .Where(e => e.UserAccountId.Equals(userAccountId) && e.FriendRequestStatus.Equals("Accepted"))
                 .ToList();
 
             var friendsAddedYou = this.Context.Friends.Select(e => e)
@@ -81,7 +81,7 @@ namespace Pastebook.Data.Repositories
 
             foreach (var friend in friendsAddedYou)
             {
-                friendsIdList.Add(friend.FriendRequestSender);
+                friendsIdList.Add(friend.UserAccountId);
             }
 
             return friendsIdList;

@@ -9,7 +9,7 @@ namespace Pastebook.Data.Models.DataTransferObjects
     public class FriendDTO
     {
         public Guid FriendId { get; set; }
-        public Guid FriendRequestSender { get; set; }
+        public Guid UserAccountId { get; set; }
         public Guid FriendRequestReceiver { get; set; }
         public string FriendRequestStatus { get; set; }
         public string FirstName { get; set; }
