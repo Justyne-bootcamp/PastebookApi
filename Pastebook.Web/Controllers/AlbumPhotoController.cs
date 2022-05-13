@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Models;
+using Pastebook.Web.DataTransferObjects;
 using Pastebook.Web.Http;
 using Pastebook.Web.Models;
 using Pastebook.Web.Services;
@@ -16,8 +17,10 @@ namespace Pastebook.Web.Controllers
 
     public class AlbumPhotoController : ControllerBase
     {
+        
         private readonly IAlbumPhotoService _albumPhotoService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        
 
         public AlbumPhotoController(IAlbumPhotoService albumPhotoService, IWebHostEnvironment webHostEnvironment)
         {
@@ -33,17 +36,21 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost]
-        [Route("/upload")]
-        public async Task<IActionResult> Upload([FromForm] FileUpload objectFile)
+        [Route("upload")]
+        public async Task<IActionResult> Upload([FromForm] AlbumPhotoFormDTO albumPhotoForm)
         {
             try
             {
-                var albumId = Guid.Parse("9A71DA21-2237-4875-8FDC-294DD64D2FBD");
-                var albumName = "Album1";
+                var fileName = albumPhotoForm.Photo.files.FileName;
+                FileInfo file = new FileInfo(fileName);
+                var ext = file.Extension;
+                var albumId = albumPhotoForm.AlbumId;
+                var albumName = albumPhotoForm.AlbumName;
                 var userName = HttpContext.Session.GetString("username");
-                if(objectFile != null)
+                
+                if(albumPhotoForm.Photo != null)
                 {
-                    if (objectFile.files.Length > 0)
+                    if (albumPhotoForm.Photo.files.Length > 0)
                     {
                         string path = $@"{_webHostEnvironment.WebRootPath}\{userName}\{albumName}\";
 
@@ -51,17 +58,17 @@ namespace Pastebook.Web.Controllers
                         {
                             Directory.CreateDirectory(path);
                         }
-                        using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
+                        
+                        using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss") + ext))
                         {
-                            objectFile.files.CopyTo(fileStream);
+                            albumPhotoForm.Photo.files.CopyTo(fileStream);
                             fileStream.Flush();
                         }
-
                         var albumPhoto = new AlbumPhoto()
                         {
                             AlbumPhotoId = Guid.NewGuid(),
                             AlbumId = albumId,
-                            AlbumPhotoPath = $@"{userName}\{albumName}\{DateTime.Now.ToString("yyyyMMddhhmmss")}"
+                            AlbumPhotoPath = $@"{userName}\{albumName}\{DateTime.Now.ToString("yyyyMMddhhmmss")+ ext}"
                         };
                         var newAlbumPhoto = await _albumPhotoService.Insert(albumPhoto);
                         return StatusCode(StatusCodes.Status200OK, newAlbumPhoto);
@@ -90,7 +97,7 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpDelete]
-        [Route("/delete/{albumPhotoId:Guid}")]
+        [Route("delete/{albumPhotoId:Guid}")]
         public async Task<IActionResult> Delete(Guid albumPhotoId)
         {
             var deleteAlbumPhoto = await _albumPhotoService.SystemPhotoDelete(albumPhotoId);
