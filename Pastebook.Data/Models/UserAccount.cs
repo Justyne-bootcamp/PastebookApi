@@ -35,8 +35,6 @@ namespace Pastebook.Data.Models
         public string MobileNumber { get; set; }
         public string AboutMe { get; set; }
         public string ProfilePhotoPath { get; set; }
-
-        [Required]
         public string Username { get; set; }
 
         public ICollection<Friend> Friends { get; set; }
