@@ -58,7 +58,7 @@ namespace Pastebook.Web.Controllers
             Friend friend = new Friend()
             {
                 FriendId = Guid.NewGuid(),
-                FriendRequestSender = userAccountId,
+                UserAccountId = userAccountId,
                 FriendRequestReceiver = id,
                 FriendRequestStatus = "Pending"
             };
