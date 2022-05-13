@@ -15,6 +15,7 @@ namespace Pastebook.Data.Models
             Friends = new HashSet<Friend>();
             Likes = new HashSet<Like>();
             Posts = new HashSet<Post>();
+            Notifications = new HashSet<Notification>();
         }
 
         [Key]
