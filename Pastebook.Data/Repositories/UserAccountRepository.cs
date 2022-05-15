@@ -19,6 +19,7 @@ namespace Pastebook.Data.Repositories
         public CredentialDTO FindByEmail(string email);
         public bool FindEmail(string email);
         public IEnumerable<UserAccount> FindByName(string searchName);
+        public UserAccount FindByUsername(string username);
     }
     public class UserAccountRepository : GenericRepository<UserAccount>, IUserAccountRepository
     {
@@ -89,7 +90,11 @@ namespace Pastebook.Data.Repositories
                 })
                 .Where(e => e.Email.Equals(email))
                 .FirstOrDefault();
-            return userAccount;
+            if(userAccount is object)
+            {
+                return userAccount;
+            }
+            throw new InvalidCredentialException($"Invalid Credential. No user with email: {email} found.");
         }
 
         public IEnumerable<UserAccount> FindByName(string searchName)
@@ -99,6 +104,19 @@ namespace Pastebook.Data.Repositories
                 .ToList();
 
             return usersWithSearchName;
+        }
+
+        public UserAccount FindByUsername(string username)
+        {
+            var userAccount = this.Context.UserAccounts
+                .Select(e => e)
+                .Where(u => u.Username.Equals(username))
+                .FirstOrDefault();
+            if(userAccount is object)
+            {
+                return userAccount;
+            }
+            throw new Exception($"No user account with username: {username} found.");
         }
     }
 }

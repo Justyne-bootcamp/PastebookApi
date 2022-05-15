@@ -23,20 +23,14 @@ namespace Pastebook.Web.Controllers
             _userAccountService = userAccountService;
             _webHostEnvironment = webHostEnvironment;
         }
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var userAccount = await _userAccountService.FindAll();
-            return StatusCode(StatusCodes.Status200OK, userAccount);
-        }
 
-        [HttpPost]
-        [Route("{id:Guid}")]
-        public async Task<IActionResult> GetUserAccount(Guid id)
+        [HttpGet]
+        [Route("{username}")]
+        public async Task<IActionResult> GetUserAccount(string username)
         {
             try
             {
-                var userAccount = await _userAccountService.FindById(id);
+                var userAccount = _userAccountService.FindByUsername(username);
                 return StatusCode(StatusCodes.Status200OK, userAccount);
             }
             catch (Exception ex)
