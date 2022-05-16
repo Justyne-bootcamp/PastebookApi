@@ -23,6 +23,12 @@ namespace Pastebook.Web.Controllers
             _userAccountService = userAccountService;
             _webHostEnvironment = webHostEnvironment;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var userAccount = await _userAccountService.FindAll();
+            return StatusCode(StatusCodes.Status200OK, userAccount);
+        }
 
         [HttpGet]
         [Route("{username}")]
@@ -46,7 +52,7 @@ namespace Pastebook.Web.Controllers
             }
         }
 
-        [HttpPost, Route("register")]
+        [HttpPost]
         public async Task<IActionResult> RegisterNewUser([FromBody] UserAccount userAccount)
         {
             if (userAccount.Password.Length < 6)

@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Pastebook.Web.Models;
 
 namespace Pastebook.Web.DataTransferObjects
@@ -7,6 +8,6 @@ namespace Pastebook.Web.DataTransferObjects
     {
         public string TextContent { get; set; }
         public Guid PostLocation { get; set; }
-        public FileUpload Photo { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }
