@@ -20,6 +20,8 @@ namespace Pastebook.Web.Services
         public bool FindEmail(string email);
         public CredentialDTO FindByEmail(string email);
         public IEnumerable<UserAccount> FindByName(string searchName);
+
+        public UserAccount FindByUsername(string username);
     }
     public class UserAccountService: IUserAccountService
     {
@@ -76,6 +78,11 @@ namespace Pastebook.Web.Services
         public async Task<UserAccount> Update(UserAccount userAccount)
         {
             return await _userAccountRepository.Update(userAccount);
+        }
+
+        public UserAccount FindByUsername(string username)
+        {
+            return _userAccountRepository.FindByUsername(username);
         }
     }
 }

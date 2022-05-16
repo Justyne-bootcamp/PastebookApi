@@ -32,52 +32,108 @@ namespace Pastebook.Web.Controllers
             _commentService = commentService;
         }
 
+
         [HttpPost]
-        [Route("addPost")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
-            //var userAccountId = Guid.Parse("C12E22E4-DA76-4E51-AEAB-52B6575C7658");
-            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var username = HttpContext.Session.GetString("username");
-            //var username = "ChesterSeda1";
+            var userAccountId = Guid.Parse("C7100DD8-F249-44ED-A52A-362D1C4C6245");
+            //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            //var username = HttpContext.Session.GetString("username");
+            var username = "testangu1";
             var postPhotoPath = "";
-
-            if (postForm.Photo != null)
+            var newPost = new Post();
+            try
             {
-
-                if (postForm.Photo.files.Length > 0)
+                if(postForm.Photo.Length > 0 || postForm.Photo.ContentType is not null)
                 {
-                    postPhotoPath = $"{username}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}";
+                    var fileExtension = Path.GetExtension(postForm.Photo.FileName);
+                    postPhotoPath = $"{username}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
                     string path = $@"{_webHostEnvironment.WebRootPath}\{username}\postPicture\";
-
-                    if (!Directory.Exists(path))
+                    //checking if folder not exist then create it
+                    if ((!Directory.Exists(path)))
                     {
                         Directory.CreateDirectory(path);
                     }
-                    using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
+
+                    var filename = $"{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
+                    //getting file name and combine with path and save it
+                    using (var fileStream = new FileStream(Path.Combine(path, filename), FileMode.Create))
                     {
-                        postForm.Photo.files.CopyTo(fileStream);
-                        fileStream.Flush();
+                        await postForm.Photo.CopyToAsync(fileStream);
                     }
+                    newPost = new Post
+                    {
+                        UserAccountId = userAccountId,
+                        PostId = Guid.NewGuid(),
+                        TextContent = postForm.TextContent,
+                        TimeStamp = DateTime.Now,
+                        PostPhotoPath = postPhotoPath,
+                        PostLocation = userAccountId
+                    };
+
+                    var add = await _postService.Insert(newPost);
                 }
+
+
+
+
+
             }
-           
-
-            var newPost = new Post
+            catch (Exception ex)
             {
-                UserAccountId = userAccountId,
-                PostId = Guid.NewGuid(),
-                TextContent = postForm.TextContent,
-                TimeStamp = DateTime.Now,
-                PostPhotoPath = postPhotoPath,
-                PostLocation = postForm.PostLocation //GUID depends in a user's timeline
-            };
+                return BadRequest(ex.Message);
+            }
 
-            var add = await _postService.Insert(newPost);
-
-            
-            return StatusCode(StatusCodes.Status201Created, add);
+            return StatusCode(StatusCodes.Status201Created, newPost);
         }
+
+        //[HttpPost]
+        //[Route("profile/{username}")]
+        //public async Task<IActionResult> AddPostToProfile(string username, PostFormDTO postForm)
+        //{
+        //    var userAccountId = Guid.Parse("C7100DD8-F249-44ED-A52A-362D1C4C6245");
+        //    //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+        //    //var username = HttpContext.Session.GetString("username");
+        //    var postOwner = "testangu1";
+        //    var postPhotoPath = "";
+
+        //    if (postForm.Photo != null)
+        //    {
+
+        //        if (postForm.Photo.files.Length > 0)
+        //        {
+        //            postPhotoPath = $"{postOwner}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}";
+        //            string path = $@"{_webHostEnvironment.WebRootPath}\{postOwner}\postPicture\";
+
+        //            if (!Directory.Exists(path))
+        //            {
+        //                Directory.CreateDirectory(path);
+        //            }
+        //            using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss")))
+        //            {
+        //                postForm.Photo.files.CopyTo(fileStream);
+        //                fileStream.Flush();
+        //            }
+        //        }
+        //    }
+        //    var timelineOwner = _userAccountService.FindByUsername(username);
+
+        //    var newPost = new Post
+        //    {
+        //        UserAccountId = userAccountId,
+        //        PostId = Guid.NewGuid(),
+        //        TextContent = postForm.TextContent,
+        //        TimeStamp = DateTime.Now,
+        //        PostPhotoPath = postPhotoPath,
+        //        PostLocation = timelineOwner.UserAccountId
+        //    };
+
+        //    var add = await _postService.Insert(newPost);
+
+
+        //    return StatusCode(StatusCodes.Status201Created, add);
+        //}
 
         [HttpDelete]
         [Route("/deletePost/{id:Guid}")]
