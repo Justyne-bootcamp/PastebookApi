@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Models;
+using Pastebook.Web.DataTransferObjects;
 using Pastebook.Web.Http;
 using Pastebook.Web.Services;
 using System;
@@ -26,15 +27,25 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status200OK, album);
         }
 
-        [HttpPost]
-        [Route("insert/{albumName}")]
-        public async Task<IActionResult> Insert(string albumName)
+        [HttpGet]
+        [Route("myalbum")]
+        public IActionResult GetMyAlbums()
         {
-            var userAccountId = HttpContext.Session.GetString("userAccountId");
+            Guid userAccountId = Guid.Parse("FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D");
+            var albums = _albumService.GetAlbumByUserAccountId(userAccountId);
+            return StatusCode(StatusCodes.Status200OK, albums);
+        }
+
+        [HttpPost]
+        [Route("insert")]
+        public async Task<IActionResult> Insert([FromBody] AlbumFormDTO albumForm)
+        {
+            //var userAccountId = HttpContext.Session.GetString("userAccountId");
+            var userAccountId = "FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D";
             var album = new Album()
             {
                 AlbumId = Guid.NewGuid(),
-                AlbumName = albumName,
+                AlbumName = albumForm.AlbumName,
                 UserAccountId = Guid.Parse(userAccountId)
             };
 
@@ -55,11 +66,10 @@ namespace Pastebook.Web.Controllers
             }
         }
         [HttpDelete]
-        [Route("delete/{albumId:Guid}")]
-        public async Task<IActionResult> Delete(Guid albumId)
+        [Route("delete/{albumId}")]
+        public async Task<IActionResult> Delete(string albumId)
         {
-
-            var album = await _albumService.Delete(albumId);
+            var album = await _albumService.Delete(Guid.Parse(albumId));
             return StatusCode(StatusCodes.Status200OK, album);
         }
     } 
