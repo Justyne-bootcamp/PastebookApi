@@ -68,10 +68,10 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status201Created, newUser);
         }
 
-        [HttpGet, Route("search")]
-        public async Task<IActionResult> SearchName([FromQuery] string searchName)
+        [HttpGet, Route("search/{searchName}")]
+        public async Task<IActionResult> SearchName(string searchName)
         {
-            if (string.IsNullOrWhiteSpace(Request.Query["searchName"]))
+            if (string.IsNullOrWhiteSpace(searchName))
             {
                 var usersAllFound = await _userAccountService.FindAll();
                 return StatusCode(StatusCodes.Status200OK, usersAllFound);
