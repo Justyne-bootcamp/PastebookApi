@@ -13,6 +13,8 @@ namespace Pastebook.Web.Services
 
         public Task<Album> Insert(Album album);
         public Task<Album> Delete(Guid albumId);
+        public IEnumerable<Album> GetAlbumByUserAccountId(Guid userId);
+
 
     }
     public class AlbumService : IAlbumService
@@ -43,5 +45,9 @@ namespace Pastebook.Web.Services
             return await _albumRepository.Delete(albumId);
         }
 
+        public IEnumerable<Album> GetAlbumByUserAccountId(Guid userId)
+        {
+            return _albumRepository.GetAlbumByUserAccountId(userId);
+        }
     }
 }
