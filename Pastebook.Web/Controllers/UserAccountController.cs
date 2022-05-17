@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Exceptions;
 using Pastebook.Data.Models;
+using Pastebook.Web.DataTransferObjects;
 using Pastebook.Web.Http;
 using Pastebook.Web.Models;
 using Pastebook.Web.Services;
@@ -101,59 +102,65 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status400BadRequest);
         }
 
-        [HttpPut]
-        [Route("aboutme")]
+        //[HttpPost]
+        //[Route("aboutme")]
 
-        public async Task<IActionResult> AddAboutMe([FromForm] string aboutMe)
-        {
+        //public async Task<IActionResult> AddAboutMe([FromBody] ProfileFormDTO profileForm)
+        //{
 
-            var userAccountId = HttpContext.Session.GetString("userAccountId");
-            Guid userAccountIdGuid = Guid.Parse(userAccountId);
-            var userAccount = await _userAccountService.FindById(userAccountIdGuid);
-            userAccount.AboutMe = aboutMe;
-            var updateAboutMe = await _userAccountService.Update(userAccount);
+        //    //var userAccountId = HttpContext.Session.GetString("userAccountId");
+        //    var userAccountId = "FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D";
+        //    Guid userAccountIdGuid = Guid.Parse(userAccountId);
+        //    var userAccount = await _userAccountService.FindById(userAccountIdGuid);
+        //    userAccount.AboutMe = profileForm.AboutMe;
+        //    var updateAboutMe = await _userAccountService.Update(userAccount);
 
-            return StatusCode(StatusCodes.Status200OK, updateAboutMe);
-        }
+        //    return StatusCode(StatusCodes.Status200OK, profileForm.AboutMe);
+        //}
 
-       
         [HttpPost]
-        [Route("profilepicture")]
-        public async Task<IActionResult> Upload([FromForm] FileUpload profilePicture)
+        [Consumes("multipart/form-data")]
+        [Route("editprofile")]
+        public async Task<IActionResult> EditProfile([FromForm] ProfileFormDTO profileFormDTO)
         {
             try
             {
-                if (profilePicture.files.Length > 0)
+                var userAccountId = "FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D";
+                Guid userAccountIdGuid = Guid.Parse(userAccountId);
+                var userAccount = await _userAccountService.FindById(userAccountIdGuid);
+
+                if (profileFormDTO.ProfilePicture != null)
                 {
-                    var username = HttpContext.Session.GetString("username");
-                    string path = $@"{_webHostEnvironment.WebRootPath}\{username}\profilePicture\";
+                    //var username = HttpContext.Session.GetString("username");
+                    var username = "SanaMinatozaki1";
+                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\profilePicture\";
 
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
                     }
-                    using (FileStream fileStream = System.IO.File.Create(path + profilePicture.files.FileName))
+                    using (FileStream fileStream = System.IO.File.Create(path + profileFormDTO.ProfilePicture.FileName))
                     {
-                        profilePicture.files.CopyTo(fileStream);
+                        await profileFormDTO.ProfilePicture.CopyToAsync(fileStream);
                         fileStream.Flush();
                     }
 
 
-                    var userAccountId = HttpContext.Session.GetString("userAccountId");
-                    Guid userAccountIdGuid = Guid.Parse(userAccountId);
-                    var userAccount = await _userAccountService.FindById(userAccountIdGuid);
-                    userAccount.ProfilePhotoPath = $@"\wwwRoot\{username}\profilePicture\{profilePicture.files.FileName}";
-                    var updateProfilePicture = await _userAccountService.Update(userAccount);
-                    return StatusCode(StatusCodes.Status200OK, updateProfilePicture);
-                }
+                    //var userAccountId = HttpContext.Session.GetString("userAccountId");
+                   
+                    
+                    userAccount.ProfilePhotoPath = $@"{profileFormDTO.ProfilePicture.FileName}";
+                    
 
-                return StatusCode(
-                    StatusCodes.Status400BadRequest,
-                    new HttpResponseError()
-                    {
-                        Message = "No image found.",
-                        StatusCode = StatusCodes.Status400BadRequest
-                    });
+                    
+                }
+                if (!string.IsNullOrEmpty(profileFormDTO.AboutMe))
+                {
+                    userAccount.AboutMe = profileFormDTO.AboutMe;
+                }
+                var updateProfile = await _userAccountService.Update(userAccount);
+                return StatusCode(StatusCodes.Status200OK, updateProfile);
+
             }
             catch (Exception ex)
             {
