@@ -30,6 +30,7 @@ namespace Pastebook.Data.Models
         [Required]
         public string Password { get; set; }
         [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Birthday { get; set; }
         public char Gender { get; set; }
         public string MobileNumber { get; set; }

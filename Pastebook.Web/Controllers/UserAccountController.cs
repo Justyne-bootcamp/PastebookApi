@@ -52,6 +52,30 @@ namespace Pastebook.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("setting")]
+        public async Task<IActionResult> GetUserAccountBySessionId()
+        {
+            //var sessionId = HttpContext.Session.GetString("userAccountId");
+            var sessionId = "F2817916-455F-41DB-A869-17BA5A733ADF";
+            try
+            {
+                var userAccount = await _userAccountService.FindById(Guid.Parse(sessionId));
+                return StatusCode(StatusCodes.Status200OK, userAccount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                StatusCodes.Status404NotFound,
+                new HttpResponseError()
+                {
+                    Message = ex.Message,
+                    StatusCode = StatusCodes.Status404NotFound
+                }
+             );
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> RegisterNewUser([FromBody] UserAccount userAccount)
         {
@@ -83,18 +107,23 @@ namespace Pastebook.Web.Controllers
         [HttpPut, Route("setting")]
         public async Task<IActionResult> UpdateRegistrationInfo(UserAccount userAccount)
         {
-            var sessionId = HttpContext.Session.GetString("userAccountId");
-            if (sessionId != userAccount.UserAccountId.ToString())
+            //var sessionId = HttpContext.Session.GetString("userAccountId");
+            var sessionId = "F2817916-455F-41DB-A869-17BA5A733ADF";
+            if (sessionId.ToLower() != userAccount.UserAccountId.ToString())
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-
+            
             if (ModelState.IsValid)
             {
                 if (userAccount.Password.Length < 6)
                 {
                     throw new InvalidRegistrationException("Password length should be more than 6");
                 }
+                var user = await _userAccountService.FindById(Guid.Parse(sessionId));
+                userAccount.Username = user.Username;
+                var newPassword = _userAccountService.GetHashPassword(userAccount.Password, sessionId);
+                userAccount.Password = newPassword;
                 await _userAccountService.Update(userAccount);
                 return StatusCode(StatusCodes.Status202Accepted, userAccount);
             }
