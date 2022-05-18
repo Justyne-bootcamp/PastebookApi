@@ -32,15 +32,13 @@ namespace Pastebook.Web.Controllers
                     HttpContext.Session.SetString("username", user.Username);
                     HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());
 
-                    var token = _tokenGeneratorService.GenerateJwtToken(user.Username, user.UserAccountId.ToString());
-
-                    return StatusCode(
-                        StatusCodes.Status200OK,
-                        new HttpResponseResult()
+                    return StatusCode(StatusCodes.Status200OK,
+                        new LoginResponse()
                         {
-                            Message = token,
-                            StatusCode = StatusCodes.Status200OK
-                        });
+                            UserAccountId = user.UserAccountId.ToString(),
+                            Username = user.Username,
+                        }
+                    );
                 }
                 else
                 {
@@ -64,54 +62,6 @@ namespace Pastebook.Web.Controllers
                         StatusCode = StatusCodes.Status404NotFound
                     });
             }
-        }
-        //for stage only
-        [HttpPost]
-        [Route("password/{password}")]
-        public IActionResult LoginPassword(string password)
-        {
-            var email = HttpContext.Session.GetString("email");
-            var user = _userAccountService.FindByEmail(email);
-            var hashedPassword = _userAccountService.GetHashPassword(password, user.UserAccountId.ToString());
-            if (user.Password.Equals(hashedPassword))
-            {
-                HttpContext.Session.SetString("username", user.Username);
-                HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());
-                return StatusCode(
-                    StatusCodes.Status200OK,
-                    new HttpResponseResult()
-                    {
-                        Message = user.Username,
-                        StatusCode = StatusCodes.Status200OK
-                    });
-            }
-            else
-            {
-                return StatusCode(
-                    StatusCodes.Status404NotFound,
-                    new HttpResponseError()
-                    {
-                        Message = "Invalid Credential. Invalid Password.",
-                        StatusCode = StatusCodes.Status404NotFound
-                    });
-            }
-            
-        }
-
-        [HttpPost]
-        [Route("logout")]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Remove("email");
-            HttpContext.Session.Remove("username");
-            HttpContext.Session.Remove("userAccountId");
-            return StatusCode(
-                    StatusCodes.Status200OK,
-                    new HttpResponseResult()
-                    {
-                        Message = "succesful logout",
-                        StatusCode = StatusCodes.Status200OK
-                    });
         }
     }
 }

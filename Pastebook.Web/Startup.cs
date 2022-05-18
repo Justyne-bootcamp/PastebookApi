@@ -61,7 +61,6 @@ namespace Pastebook.Web
             services.AddScoped<IAlbumPhotoService, AlbumPhotoService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ILikeService, LikeService>();
-            services.AddScoped<ITokenGeneratorService, TokenGeneratorService>();
 
             services.AddCors();
         }
