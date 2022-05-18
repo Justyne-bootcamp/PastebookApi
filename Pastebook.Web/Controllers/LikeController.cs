@@ -30,9 +30,10 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LikePost(string postStringId)
+        public async Task<IActionResult> LikePost([FromBody] string postStringId)
         {
-            var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            //var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var sessionId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
             var postId = Guid.Parse(postStringId);
             var likePost = _likeService.GetLikeByPostIdAndUserId(sessionId, postId);
             if (likePost == null)
@@ -56,7 +57,7 @@ namespace Pastebook.Web.Controllers
                 };
                 await _likeService.Insert(newLike);
                 var notif = await _notificationService.Insert(notification);
-                return StatusCode(StatusCodes.Status201Created, likePost);
+                return StatusCode(StatusCodes.Status201Created, newLike);
             }
             if(likePost != null)
             {
@@ -65,6 +66,18 @@ namespace Pastebook.Web.Controllers
             }
             return StatusCode(StatusCodes.Status400BadRequest, likePost);
 
+        }
+
+        [HttpGet]
+        [Route("ifLiked")]
+        public async Task<IActionResult> GetIfLiked([FromBody] string postStringId)
+        {
+            //var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var sessionId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var postId = Guid.Parse(postStringId);
+            var likedPost = _likeService.GetLikeByPostIdAndUserId(sessionId, postId);
+
+            return StatusCode(StatusCodes.Status201Created, likedPost);
         }
     }
 }

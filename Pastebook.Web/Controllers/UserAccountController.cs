@@ -58,7 +58,7 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> GetUserAccountBySessionId()
         {
             //var sessionId = HttpContext.Session.GetString("userAccountId");
-            var sessionId = "F2817916-455F-41DB-A869-17BA5A733ADF";
+            var sessionId = "610D9455-4E7B-4B78-A4CF-99E47A48FCBE";
             try
             {
                 var userAccount = await _userAccountService.FindById(Guid.Parse(sessionId));
@@ -87,7 +87,7 @@ namespace Pastebook.Web.Controllers
             var newGuid = Guid.NewGuid();
             userAccount.UserAccountId = newGuid;
             userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
-            var newPassword = _userAccountService.GetHashPassword(userAccount.Password, newGuid.ToString());
+            var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
             userAccount.Password = newPassword;
             var newUser = await _userAccountService.Insert(userAccount);
             return StatusCode(StatusCodes.Status201Created, newUser);
@@ -109,7 +109,7 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> UpdateRegistrationInfo(UserAccount userAccount)
         {
             //var sessionId = HttpContext.Session.GetString("userAccountId");
-            var sessionId = "F2817916-455F-41DB-A869-17BA5A733ADF";
+            var sessionId = "610D9455-4E7B-4B78-A4CF-99E47A48FCBE";
             if (sessionId.ToLower() != userAccount.UserAccountId.ToString())
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
@@ -123,7 +123,7 @@ namespace Pastebook.Web.Controllers
                 }
                 var user = await _userAccountService.FindById(Guid.Parse(sessionId));
                 userAccount.Username = user.Username;
-                var newPassword = _userAccountService.GetHashPassword(userAccount.Password, sessionId);
+                var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
                 userAccount.Password = newPassword;
                 await _userAccountService.Update(userAccount);
                 return StatusCode(StatusCodes.Status202Accepted, userAccount);
