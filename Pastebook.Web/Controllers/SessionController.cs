@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Pastebook.Data.Models.DataTransferObjects;
 using Pastebook.Web.Services;
 using System;
 using Pastebook.Web.Http;
@@ -13,18 +12,16 @@ namespace Pastebook.Web.Controllers
     public class SessionController : Controller
     {
         private readonly IUserAccountService _userAccountService;
-        private readonly ITokenGeneratorService _tokenGeneratorService;
-        public SessionController(IUserAccountService userAccountService, ITokenGeneratorService tokenGeneratorService)
+        public SessionController(IUserAccountService userAccountService)
         {
             _userAccountService = userAccountService;
-            _tokenGeneratorService = tokenGeneratorService;
         }
         [HttpPost]
         [Route("login")]
         public IActionResult Login([FromBody] LoginFormDTO loginForm)
         {
             try
-            {
+            {   
                 var user = _userAccountService.FindByEmail(loginForm.Email);
                 var hashedPassword = _userAccountService.GetHashPassword(loginForm.Password, user.UserAccountId.ToString());
                 if (user.Password.Equals(hashedPassword))
@@ -58,7 +55,7 @@ namespace Pastebook.Web.Controllers
                     StatusCodes.Status404NotFound,
                     new HttpResponseResult()
                     {
-                        Message = e.Message,
+                        Message = "fail in try catch",
                         StatusCode = StatusCodes.Status404NotFound
                     });
             }
