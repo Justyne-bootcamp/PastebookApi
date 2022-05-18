@@ -13,9 +13,11 @@ namespace Pastebook.Web.Controllers
     public class SessionController : Controller
     {
         private readonly IUserAccountService _userAccountService;
-        public SessionController(IUserAccountService userAccountService)
+        private readonly ITokenGeneratorService _tokenGeneratorService;
+        public SessionController(IUserAccountService userAccountService, ITokenGeneratorService tokenGeneratorService)
         {
             _userAccountService = userAccountService;
+            _tokenGeneratorService = tokenGeneratorService;
         }
         [HttpPost]
         [Route("login")]
@@ -29,11 +31,14 @@ namespace Pastebook.Web.Controllers
                 {
                     HttpContext.Session.SetString("username", user.Username);
                     HttpContext.Session.SetString("userAccountId", user.UserAccountId.ToString());
+
+                    var token = _tokenGeneratorService.GenerateJwtToken(user.Username, user.UserAccountId.ToString());
+
                     return StatusCode(
                         StatusCodes.Status200OK,
                         new HttpResponseResult()
                         {
-                            Message = user.Username,
+                            Message = token,
                             StatusCode = StatusCodes.Status200OK
                         });
                 }
