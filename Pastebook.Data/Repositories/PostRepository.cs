@@ -38,6 +38,7 @@ namespace Pastebook.Data.Repositories
                     PostLocation = post.PostLocation,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    Username = user.Username,
                     PostPhotoPath = post.PostPhotoPath,
                     ProfilePhotoPath = user.ProfilePhotoPath
                 })
