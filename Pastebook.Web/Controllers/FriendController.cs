@@ -51,18 +51,17 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status200OK, new FriendDTO());
         }
         [HttpPost]
-        [Route("addFriend/{id:Guid}")]
-        public async Task<IActionResult> AddFriend(Guid id)
+        [Route("addFriend")]
+        public async Task<IActionResult> AddFriend([FromBody] AddFriendForm addFriendForm)
         {
-            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             Friend friend = new Friend()
             {
                 FriendId = Guid.NewGuid(),
-                UserAccountId = userAccountId,
-                FriendRequestReceiver = id,
+                UserAccountId = Guid.Parse("7e501cc3-4f84-4633-9bac-feb5ed7f7692"),
+                FriendRequestReceiver = Guid.Parse("9db09605-8a13-4755-99e9-9ccfe7356c3b"),
                 FriendRequestStatus = "Pending"
             };
-
+            var addedFriend = _friendService.AddFriend(friend);
             Notification notification = new Notification()
             {
                 NotificationId = Guid.NewGuid(),
@@ -70,17 +69,18 @@ namespace Pastebook.Web.Controllers
                 NotificationStatus = "Unread",
                 NotificationType = "FriendRequest",
                 NotificationPath = "http://site/friends",
-                UserAccountId = id,
-                NotificationSourceId = userAccountId,
+                UserAccountId = Guid.Parse("9db09605-8a13-4755-99e9-9ccfe7356c3b"),
+                NotificationSourceId = Guid.Parse("7e501cc3-4f84-4633-9bac-feb5ed7f7692"),
             };
 
-            var addedFriend = _friendService.AddFriend(friend);
-            var notif = await _notificationService.Insert(notification);
+            
+            //var notif = await _notificationService.Insert(notification);
             if (addedFriend != null)
             {
                 return StatusCode(
                     StatusCodes.Status201Created, addedFriend);
             }
+            
             return StatusCode(
                 StatusCodes.Status404NotFound, 
                 new HttpResponseError()

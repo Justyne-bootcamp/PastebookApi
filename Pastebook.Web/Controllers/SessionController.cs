@@ -24,7 +24,8 @@ namespace Pastebook.Web.Controllers
             try
             {   
                 var user = _userAccountService.FindByEmail(loginForm.Email);
-                var hashedPassword = _userAccountService.GetHashPassword(loginForm.Password, user.UserAccountId.ToString());
+                var hashedPassword = _userAccountService.GetHashPassword(loginForm.Password, user.Username);
+
                 if (user.Password.Equals(hashedPassword))
                 {
                     HttpContext.Session.SetString("username", user.Username);
