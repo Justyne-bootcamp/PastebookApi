@@ -154,14 +154,14 @@ namespace Pastebook.Web.Controllers
         {
             try
             {
-                var userAccountId = "FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D";
-                Guid userAccountIdGuid = Guid.Parse(userAccountId);
+                //var userAccountId = "143ADC00-3A53-4F86-A175-6DBF4DB36BF8";
+                Guid userAccountIdGuid = Guid.Parse(profileFormDTO.UserAccountId);
                 var userAccount = await _userAccountService.FindById(userAccountIdGuid);
 
                 if (profileFormDTO.ProfilePicture != null)
                 {
                     //var username = HttpContext.Session.GetString("username");
-                    var username = "SanaMinatozaki1";
+                    var username = userAccount.Username;
                     string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\profilePicture\";
 
                     if (!Directory.Exists(path))
