@@ -4,6 +4,7 @@ using Pastebook.Data.Models.DataTransferObjects;
 using Pastebook.Web.Services;
 using System;
 using Pastebook.Web.Http;
+using System.Threading.Tasks;
 
 namespace Pastebook.Web.Controllers
 {
@@ -75,6 +76,34 @@ namespace Pastebook.Web.Controllers
                     });
             }
             
+        }
+
+        [HttpPost]
+        [Route("settingPassword")]
+        public async Task<IActionResult> SettingPassword([FromBody] string password)
+        {
+            //var userAccountId = HttpContext.Session.GetString("userAccountId");
+            var userAccountId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var user = await _userAccountService.FindById(userAccountId);
+            var hashedPassword = _userAccountService.GetHashPassword(password, user.Username);
+            if (user.Password.Equals(hashedPassword))
+            {
+                return StatusCode(
+                    StatusCodes.Status200OK,
+                    new HttpResponseResult()
+                    {
+                        Message = user.Username,
+                        StatusCode = StatusCodes.Status200OK
+                    });
+            }
+            else
+            {
+                return StatusCode(
+                    StatusCodes.Status404NotFound,
+
+                    hashedPassword);
+            }
+
         }
 
         [HttpPost]
