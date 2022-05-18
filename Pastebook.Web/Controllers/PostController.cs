@@ -104,8 +104,8 @@ namespace Pastebook.Web.Controllers
                 if (postForm.Photo.Length > 0 || postForm.Photo.ContentType is not null)
                 {
                     var fileExtension = Path.GetExtension(postForm.Photo.FileName);
-                    postPhotoPath = $"{username}\\posts\\{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
-                    string path = $@"{_webHostEnvironment.WebRootPath}\{username}\postPicture\";
+                    postPhotoPath = $"{username}/posts/{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
+                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\posts\";
                     //checking if folder not exist then create it
                     if ((!Directory.Exists(path)))
                     {
@@ -154,7 +154,8 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> GetNewsFeed()
         {
 
-            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var userAccountId = Guid.Parse("C7100DD8-F249-44ED-A52A-362D1C4C6245");
             var friends = _friendService.GetFriendsId(userAccountId).ToList();
 
             friends.Add(userAccountId);

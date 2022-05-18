@@ -21,10 +21,19 @@ namespace Pastebook.Web.Controllers
             _notificationService = notificationService;
         }
 
-        [HttpPost, Route("{postId:Guid}")]
-        public async Task<IActionResult> LikePost([FromRoute] Guid postId)
+        [HttpGet]
+        public async Task<IActionResult> GetLikersOfPost(string postStringId)
+        {
+            var postId = Guid.Parse(postStringId);
+            var likers = _likeService.GetAllLikesByPostId(postId);
+            return StatusCode(StatusCodes.Status200OK, likers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LikePost(string postStringId)
         {
             var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var postId = Guid.Parse(postStringId);
             var likePost = _likeService.GetLikeByPostIdAndUserId(sessionId, postId);
             if (likePost == null)
             {

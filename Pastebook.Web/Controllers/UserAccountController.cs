@@ -155,7 +155,7 @@ namespace Pastebook.Web.Controllers
                 if (profilePicture.files.Length > 0)
                 {
                     var username = HttpContext.Session.GetString("username");
-                    string path = $@"{_webHostEnvironment.WebRootPath}\{username}\profilePicture\";
+                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\profilePicture\";
 
                     if (!Directory.Exists(path))
                     {
@@ -171,7 +171,7 @@ namespace Pastebook.Web.Controllers
                     var userAccountId = HttpContext.Session.GetString("userAccountId");
                     Guid userAccountIdGuid = Guid.Parse(userAccountId);
                     var userAccount = await _userAccountService.FindById(userAccountIdGuid);
-                    userAccount.ProfilePhotoPath = $@"\wwwRoot\{username}\profilePicture\{profilePicture.files.FileName}";
+                    userAccount.ProfilePhotoPath = $@"{username}/profilePicture/{profilePicture.files.FileName}";
                     var updateProfilePicture = await _userAccountService.Update(userAccount);
                     return StatusCode(StatusCodes.Status200OK, updateProfilePicture);
                 }
