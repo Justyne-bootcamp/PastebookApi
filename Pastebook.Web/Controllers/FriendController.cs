@@ -23,11 +23,11 @@ namespace Pastebook.Web.Controllers
             _notificationService = notificationService;
         }
 
-        [HttpPost]
-        [Route("friends")]
-        public IActionResult GetFriends()
+        [HttpGet]
+        [Route("friends/{id}")]
+        public IActionResult GetFriends(string id)
         {            
-            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
+            var userAccountId = Guid.Parse(id);
             var friends = _friendService.GetAllFriends(userAccountId, "Accepted");
             if(friends != null)
             {

@@ -15,5 +15,6 @@ namespace Pastebook.Data.Models.DataTransferObjects
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ProfilePhotoPath { get; set; }
+        public string Username { get; set; }
     }
 }

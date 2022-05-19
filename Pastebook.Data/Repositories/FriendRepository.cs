@@ -37,6 +37,7 @@ namespace Pastebook.Data.Repositories
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     ProfilePhotoPath = u.ProfilePhotoPath,
+                    Username = u.Username,
                 })
                 .Where(e => e.UserAccountId.Equals(userAccountId) && e.FriendRequestStatus.Equals(status))
                 .ToList();
@@ -58,6 +59,7 @@ namespace Pastebook.Data.Repositories
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     ProfilePhotoPath = u.ProfilePhotoPath,
+                    Username = u.Username,
                 })
                 .Where(e => e.FriendRequestReceiver.Equals(userAccountId) && e.FriendRequestStatus.Equals(status))
                 .ToList();
