@@ -27,12 +27,12 @@ namespace Pastebook.Data.Data
         public virtual DbSet<UserAccount> UserAccounts { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer("Server=JLMBQG3;Database=PastebookDb;User Id=sa;Password=sqlmalambing");
-        //    }
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=DMMBQG3;Database=PastebookDb;User Id=sa;Password=lastgam3counts");
+            }
+        }
     }
 }

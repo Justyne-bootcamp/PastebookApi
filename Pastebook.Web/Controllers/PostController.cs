@@ -37,7 +37,7 @@ namespace Pastebook.Web.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
-            var userAccountId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             //var username = HttpContext.Session.GetString("username");
             var username = "testangu1";
@@ -94,7 +94,7 @@ namespace Pastebook.Web.Controllers
         [Route("pastebook.com/{profileUsername}")]
         public async Task<IActionResult> AddPostToProfile([FromRoute] string profileUsername, [FromForm] PostFormDTO postForm)
         {
-            var userAccountId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             //var username = HttpContext.Session.GetString("username");
             var username = "testangu1";
@@ -102,7 +102,7 @@ namespace Pastebook.Web.Controllers
             var newPost = new Post();
             try
             {
-                if (postForm.Photo.Length > 0 || postForm.Photo.ContentType is not null)
+                if (postForm.Photo is not null)
                 {
                     var fileExtension = Path.GetExtension(postForm.Photo.FileName);
                     postPhotoPath = $"{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
@@ -156,7 +156,7 @@ namespace Pastebook.Web.Controllers
         {
 
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var userAccountId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
             var friends = _friendService.GetFriendsId(userAccountId).ToList();
 
             friends.Add(userAccountId);
@@ -171,7 +171,7 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> GetTimeline()
         {
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var userAccountId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
             var posts = _postService.GetTimelinePosts(userAccountId);
             if(posts != null)
             {
