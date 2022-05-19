@@ -94,10 +94,10 @@ namespace Pastebook.Web.Controllers
         [Route("pastebook.com/{profileUsername}")]
         public async Task<IActionResult> AddPostToProfile([FromRoute] string profileUsername, [FromForm] PostFormDTO postForm)
         {
-            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
+            var userAccountId = postForm.SessionId;
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             //var username = HttpContext.Session.GetString("username");
-            var username = "testangu1";
+            var username = profileUsername;
             var postPhotoPath = "";
             var newPost = new Post();
             try
