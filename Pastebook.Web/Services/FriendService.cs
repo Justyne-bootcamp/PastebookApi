@@ -16,6 +16,7 @@ namespace Pastebook.Web.Services
         public Task<Friend> FindById(Guid friendId);
         public Task<Friend> Update(Friend friend);
         public IEnumerable<Guid> GetFriendsId(Guid userAccountId);
+        public FriendRequestResponseDTO GetRelationship(Guid userAccountId, Guid receiverAccountId);
     }
     public class FriendService : IFriendService
     {
@@ -54,6 +55,11 @@ namespace Pastebook.Web.Services
         public IEnumerable<Guid> GetFriendsId(Guid userAccountId)
         {
             return _friendRepository.GetFriendsId(userAccountId);
+        }
+
+        public FriendRequestResponseDTO GetRelationship(Guid userAccountId, Guid receiverAccountId)
+        {
+            return _friendRepository.GetRelationship(userAccountId, receiverAccountId);
         }
     }
 }

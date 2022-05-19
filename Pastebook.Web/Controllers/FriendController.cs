@@ -5,8 +5,8 @@ using Pastebook.Web.Services;
 using System;
 using Pastebook.Web.Http;
 using Pastebook.Data.Models.DataTransferObjects;
-using Pastebook.Web.DataTransferObjects;
 using System.Threading.Tasks;
+using Pastebook.Web.DataTransferObjects;
 
 namespace Pastebook.Web.Controllers
 {
@@ -57,11 +57,11 @@ namespace Pastebook.Web.Controllers
             Friend friend = new Friend()
             {
                 FriendId = Guid.NewGuid(),
-                UserAccountId = Guid.Parse("7e501cc3-4f84-4633-9bac-feb5ed7f7692"),
-                FriendRequestReceiver = Guid.Parse("9db09605-8a13-4755-99e9-9ccfe7356c3b"),
+                UserAccountId = Guid.Parse(addFriendForm.UserAccountId),
+                FriendRequestReceiver = Guid.Parse(addFriendForm.FriendRequestReceiver),
                 FriendRequestStatus = "Pending"
             };
-            var addedFriend = _friendService.AddFriend(friend);
+            var addedFriend = await _friendService.AddFriend(friend);
             Notification notification = new Notification()
             {
                 NotificationId = Guid.NewGuid(),
@@ -69,12 +69,12 @@ namespace Pastebook.Web.Controllers
                 NotificationStatus = "Unread",
                 NotificationType = "FriendRequest",
                 NotificationPath = "http://site/friends",
-                UserAccountId = Guid.Parse("9db09605-8a13-4755-99e9-9ccfe7356c3b"),
-                NotificationSourceId = Guid.Parse("7e501cc3-4f84-4633-9bac-feb5ed7f7692"),
+                UserAccountId = Guid.Parse(addFriendForm.FriendRequestReceiver),
+                NotificationSourceId = Guid.Parse(addFriendForm.UserAccountId),
             };
 
-            
-            //var notif = await _notificationService.Insert(notification);
+
+            var notif = await _notificationService.Insert(notification);
             if (addedFriend != null)
             {
                 return StatusCode(
@@ -90,17 +90,25 @@ namespace Pastebook.Web.Controllers
                 });
         }
 
-        [HttpPut]
-        [Route("respondToRequest/{friendId:Guid}")]
-        public async Task<IActionResult> RespondToRequest([FromRoute] Guid friendId) 
+        [HttpPost]
+        [Route("relationship")]
+        public IActionResult GetRelationship([FromBody] RelationshipForm relationshipForm)
         {
-            FriendRequestResponseDTO response = new FriendRequestResponseDTO()
+            var relationship = _friendService.GetRelationship(
+                Guid.Parse(relationshipForm.UserAccountId),
+                Guid.Parse(relationshipForm.ReceiverAccountId));
+            return StatusCode(StatusCodes.Status200OK, new RelationshipResponse()
             {
-                FriendId = friendId,
-                Response = "Accepted"
-            };
-            var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var existingFriend = await _friendService.FindById(response.FriendId);
+                FriendId = relationship.FriendId.ToString(),
+                Relationship = relationship.Response,
+            });
+        }
+
+        [HttpPost]
+        [Route("respondToRequest")]
+        public async Task<IActionResult> RespondToRequest([FromBody] RespondToFriendRequest response) 
+        {
+            var existingFriend = await _friendService.FindById(Guid.Parse(response.FriendId));
             existingFriend.FriendRequestStatus = response.Response;
             var friend = _friendService.Update(existingFriend);
 
