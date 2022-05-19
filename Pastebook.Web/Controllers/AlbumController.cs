@@ -28,11 +28,10 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpGet]
-        [Route("myalbum")]
-        public IActionResult GetMyAlbums()
+        [Route("myalbum/{userAccountId}")]
+        public IActionResult GetMyAlbums(string userAccountId)
         {
-            Guid userAccountId = Guid.Parse("FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D");
-            var albums = _albumService.GetAlbumByUserAccountId(userAccountId);
+            var albums = _albumService.GetAlbumByUserAccountId(Guid.Parse(userAccountId));
             return StatusCode(StatusCodes.Status200OK, albums);
         }
 
@@ -40,13 +39,11 @@ namespace Pastebook.Web.Controllers
         [Route("insert")]
         public async Task<IActionResult> Insert([FromBody] AlbumFormDTO albumForm)
         {
-            //var userAccountId = HttpContext.Session.GetString("userAccountId");
-            var userAccountId = "FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D";
             var album = new Album()
             {
                 AlbumId = Guid.NewGuid(),
                 AlbumName = albumForm.AlbumName,
-                UserAccountId = Guid.Parse(userAccountId)
+                UserAccountId = Guid.Parse(albumForm.UserAccountId)
             };
 
             var newAlbum = await _albumService.Insert(album);
