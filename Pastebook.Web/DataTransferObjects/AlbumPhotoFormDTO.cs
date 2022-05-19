@@ -1,14 +1,15 @@
-﻿using Pastebook.Web.Models;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 
 namespace Pastebook.Web.DataTransferObjects
 {
     public class AlbumPhotoFormDTO
     {
-        public Guid AlbumId { get; set; }
+        public string AlbumId { get; set; }
 
         public string AlbumName { get; set; }
+        public string Username { get; set; }
 
-        public FileUpload Photo { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

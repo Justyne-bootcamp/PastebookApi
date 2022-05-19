@@ -35,25 +35,32 @@ namespace Pastebook.Web.Controllers
             return StatusCode(StatusCodes.Status200OK, albumPhotos);
         }
 
+        [HttpGet]
+        [Route("getphoto/{albumId}")]
+        public IActionResult GetPhoto(string albumId)
+        {
+            var photos = _albumPhotoService.GetByAlbumId(Guid.Parse(albumId));
+            return StatusCode(StatusCodes.Status200OK, photos);
+        }
+
         [HttpPost]
         [Route("upload")]
         public async Task<IActionResult> Upload([FromForm] AlbumPhotoFormDTO albumPhotoForm)
         {
             try
             {
-                var fileName = albumPhotoForm.Photo.files.FileName;
+                var fileName = albumPhotoForm.Photo.FileName;
                 FileInfo file = new FileInfo(fileName);
                 var ext = file.Extension;
-                var albumId = albumPhotoForm.AlbumId;
+                var albumId = Guid.Parse(albumPhotoForm.AlbumId);
                 var albumName = albumPhotoForm.AlbumName;
-                var userName = HttpContext.Session.GetString("username");
+                var userName = albumPhotoForm.Username;
                 
                 if(albumPhotoForm.Photo != null)
                 {
-                    if (albumPhotoForm.Photo.files.Length > 0)
+                    if (albumPhotoForm.Photo.Length > 0)
                     {
-                        string path = $@"{_webHostEnvironment.WebRootPath}\{userName}\{albumName}\";
-
+                        string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{userName}\{albumName}\";
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
@@ -61,14 +68,14 @@ namespace Pastebook.Web.Controllers
                         
                         using (FileStream fileStream = System.IO.File.Create(path + DateTime.Now.ToString("yyyyMMddhhmmss") + ext))
                         {
-                            albumPhotoForm.Photo.files.CopyTo(fileStream);
+                            await albumPhotoForm.Photo.CopyToAsync(fileStream);
                             fileStream.Flush();
                         }
                         var albumPhoto = new AlbumPhoto()
                         {
                             AlbumPhotoId = Guid.NewGuid(),
                             AlbumId = albumId,
-                            AlbumPhotoPath = $@"{userName}\{albumName}\{DateTime.Now.ToString("yyyyMMddhhmmss")+ ext}"
+                            AlbumPhotoPath = $@"{DateTime.Now.ToString("yyyyMMddhhmmss")+ ext}"
                         };
                         var newAlbumPhoto = await _albumPhotoService.Insert(albumPhoto);
                         return StatusCode(StatusCodes.Status200OK, newAlbumPhoto);

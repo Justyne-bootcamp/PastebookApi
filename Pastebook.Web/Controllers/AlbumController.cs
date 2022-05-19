@@ -14,10 +14,12 @@ namespace Pastebook.Web.Controllers
     public class AlbumController : ControllerBase
     {
         private readonly IAlbumService _albumService;
+        private readonly IAlbumPhotoService _albumPhotoService;
 
-        public AlbumController(IAlbumService albumService)
+        public AlbumController(IAlbumService albumService, IAlbumPhotoService albumPhotoService)
         {
             _albumService = albumService;
+            _albumPhotoService = albumPhotoService;
         }
 
         [HttpGet]
@@ -67,6 +69,7 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> Delete(string albumId)
         {
             var album = await _albumService.Delete(Guid.Parse(albumId));
+            _albumPhotoService.DeletePhotosByAlbumId(Guid.Parse(albumId));
             return StatusCode(StatusCodes.Status200OK, album);
         }
     } 

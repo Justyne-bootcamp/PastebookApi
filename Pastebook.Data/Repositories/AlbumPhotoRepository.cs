@@ -12,6 +12,8 @@ namespace Pastebook.Data.Repositories
     public interface IAlbumPhotoRepository : IBaseRepository<AlbumPhoto>
     {
         public Task<AlbumPhoto> SystemPhotoDelete(Guid albumPhotoId);
+        public IEnumerable<AlbumPhoto> GetByAlbumId(Guid albumId);
+        public void DeletePhotosByAlbumId(Guid albumId);
     }
     public class AlbumPhotoRepository : GenericRepository<AlbumPhoto>, IAlbumPhotoRepository
     {
@@ -19,6 +21,25 @@ namespace Pastebook.Data.Repositories
         public AlbumPhotoRepository(PastebookContext context, IWebHostEnvironment webHostEnvironment) : base(context)
         {
             _webHostEnvironment = webHostEnvironment;
+        }
+
+        public void DeletePhotosByAlbumId(Guid albumId)
+        {
+            var photos = this.Context.AlbumPhotos
+                .Select(e => e)
+                .Where(e => e.AlbumId.Equals(albumId))
+                .ToList();
+            this.Context.AlbumPhotos.RemoveRange(photos);
+            this.Context.SaveChanges();
+        }
+
+        public IEnumerable<AlbumPhoto> GetByAlbumId(Guid albumId)
+        {
+           var photos = this.Context.AlbumPhotos
+                .Select(e => e)
+                .Where(p => p.AlbumId == albumId)
+                .ToList();
+            return photos;
         }
 
         public async Task<AlbumPhoto> SystemPhotoDelete(Guid albumPhotoId)
