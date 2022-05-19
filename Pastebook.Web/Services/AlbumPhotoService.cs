@@ -17,6 +17,8 @@ namespace Pastebook.Web.Services
         public Task<AlbumPhoto> Delete(Guid albumPhotoId);
         public Task<AlbumPhoto> Insert(AlbumPhoto albumPhoto);
         public Task<AlbumPhoto> SystemPhotoDelete(Guid albumPhotoId);
+        public IEnumerable<AlbumPhoto> GetByAlbumId(Guid albumId);
+        public void DeletePhotosByAlbumId(Guid albumId);
     }
     public class AlbumPhotoService : IAlbumPhotoService
     {
@@ -78,6 +80,16 @@ namespace Pastebook.Web.Services
         public async Task<AlbumPhoto> SystemPhotoDelete(Guid albumPhotoId)
         {
             return await _albumPhotoRepository.SystemPhotoDelete(albumPhotoId);
+        }
+
+        public IEnumerable<AlbumPhoto> GetByAlbumId(Guid albumId)
+        {
+            return _albumPhotoRepository.GetByAlbumId(albumId);
+        }
+
+        public void DeletePhotosByAlbumId(Guid albumId)
+        {
+            _albumPhotoRepository.DeletePhotosByAlbumId(albumId);
         }
     }
 }
