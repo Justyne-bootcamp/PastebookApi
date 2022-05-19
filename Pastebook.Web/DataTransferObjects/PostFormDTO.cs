@@ -8,6 +8,7 @@ namespace Pastebook.Web.DataTransferObjects
     {
         public string TextContent { get; set; }
         public Guid PostLocation { get; set; }
+        public Guid SessionId { get; set; }
         public IFormFile? Photo { get; set; }
     }
 }

@@ -47,7 +47,21 @@ namespace Pastebook.Data.Repositories
             .OrderByDescending(u => u.TimeStamp)
             .ToList();
 
+            foreach(var post in allPosts)
+            {
+                var isLiked = this.Context.Likes
+                    .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(l.UserAccountId))
+                    .FirstOrDefault();
 
+                if(isLiked != null)
+                {
+                    post.isLiked = true;
+                }
+                else
+                {
+                    post.isLiked = false;
+                }
+            }
 
             return allPosts;
         }
@@ -74,6 +88,22 @@ namespace Pastebook.Data.Repositories
             .Where(u => u.PostLocation.Equals(userAccountId))
             .OrderByDescending(u => u.TimeStamp)
             .ToList();
+
+            foreach (var post in timeListPosts)
+            {
+                var isLiked = this.Context.Likes
+                    .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(l.UserAccountId))
+                    .FirstOrDefault();
+
+                if (isLiked != null)
+                {
+                    post.isLiked = true;
+                }
+                else
+                {
+                    post.isLiked = false;
+                }
+            }
 
             return timeListPosts;
         }
