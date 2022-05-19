@@ -38,9 +38,6 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
             var userAccountId = postForm.SessionId;
-            //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            //var username = HttpContext.Session.GetString("username");
-            var username = "testangu1";
             var postPhotoPath = "";
             var newPost = new Post();
             try
@@ -49,7 +46,7 @@ namespace Pastebook.Web.Controllers
                 {
                     var fileExtension = Path.GetExtension(postForm.Photo.FileName);
                     postPhotoPath = $"{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
-                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\posts\";
+                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{postForm.Username}\posts\";
                     //checking if folder not exist then create it
                     if ((!Directory.Exists(path)))
                     {
@@ -76,14 +73,10 @@ namespace Pastebook.Web.Controllers
 
                 var add = await _postService.Insert(newPost);
 
-
-
-
-
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.InnerException.Message);
             }
 
             return StatusCode(StatusCodes.Status201Created, newPost);
@@ -91,13 +84,11 @@ namespace Pastebook.Web.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        [Route("pastebook.com/{profileUsername}")]
-        public async Task<IActionResult> AddPostToProfile([FromRoute] string profileUsername, [FromForm] PostFormDTO postForm)
+        [Route("posttoprofile")]
+        public async Task<IActionResult> AddPostToProfile([FromForm] PostFormDTO postForm)
         {
             var userAccountId = postForm.SessionId;
-            //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            //var username = HttpContext.Session.GetString("username");
-            var username = profileUsername;
+            var username = postForm.Username;
             var postPhotoPath = "";
             var newPost = new Post();
             try
@@ -122,7 +113,7 @@ namespace Pastebook.Web.Controllers
 
                 }
 
-                var profileUser = _userAccountService.FindByUsername(profileUsername);
+                var profileUser = _userAccountService.FindByUsername(postForm.Username);
                 newPost = new Post
                 {
                     UserAccountId = userAccountId,
@@ -155,8 +146,6 @@ namespace Pastebook.Web.Controllers
         [Route("newsfeed")]
         public async Task<IActionResult> GetNewsFeed([FromQuery] string sessionId)
         {
-
-            //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             var userAccountId = Guid.Parse(sessionId);
             var friends = _friendService.GetFriendsId(userAccountId).ToList();
 
@@ -169,10 +158,11 @@ namespace Pastebook.Web.Controllers
 
         [HttpGet]
         [Route("timeline")]
-        public async Task<IActionResult> GetTimeline([FromQuery] string sessionId)
+        public async Task<IActionResult> GetTimeline([FromQuery] string username)
         {
-            //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var userAccountId = Guid.Parse(sessionId);
+
+            var profileUser = _userAccountService.FindByUsername(username);
+            var userAccountId = profileUser.UserAccountId;
             var posts = _postService.GetTimelinePosts(userAccountId);
             if(posts != null)
             {

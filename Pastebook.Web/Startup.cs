@@ -32,6 +32,10 @@ namespace Pastebook.Web
         {
 
             services.AddControllers();
+            services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {

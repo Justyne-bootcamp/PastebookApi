@@ -109,10 +109,9 @@ namespace Pastebook.Data.Repositories
         public UserAccount FindByUsername(string username)
         {
             var userAccount = this.Context.UserAccounts
-                .Select(e => e)
                 .Where(u => u.Username.Equals(username))
                 .FirstOrDefault();
-            if(userAccount is object)
+            if(userAccount != null)
             {
                 return userAccount;
             }
