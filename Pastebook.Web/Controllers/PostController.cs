@@ -120,19 +120,20 @@ namespace Pastebook.Web.Controllers
                         await postForm.Photo.CopyToAsync(fileStream);
                     }
 
-                    var profileUser = _userAccountService.FindByUsername(profileUsername);
-                    newPost = new Post
-                    {
-                        UserAccountId = userAccountId,
-                        PostId = Guid.NewGuid(),
-                        TextContent = postForm.TextContent,
-                        TimeStamp = DateTime.Now,
-                        PostPhotoPath = postPhotoPath,
-                        PostLocation = profileUser.UserAccountId
-                    };
-
-                    var add = await _postService.Insert(newPost);
                 }
+
+                var profileUser = _userAccountService.FindByUsername(profileUsername);
+                newPost = new Post
+                {
+                    UserAccountId = userAccountId,
+                    PostId = Guid.NewGuid(),
+                    TextContent = postForm.TextContent,
+                    TimeStamp = DateTime.Now,
+                    PostPhotoPath = postPhotoPath,
+                    PostLocation = profileUser.UserAccountId
+                };
+
+                var add = await _postService.Insert(newPost);
             }
             catch (Exception ex)
             {
