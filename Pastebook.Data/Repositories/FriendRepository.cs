@@ -14,6 +14,8 @@ namespace Pastebook.Data.Repositories
         public IEnumerable<FriendDTO> GetAddedFriends(Guid userAccountId, string status);
         public IEnumerable<FriendDTO> GetFriendRequests(Guid userAccountId, string status);
         public IEnumerable<Guid> GetFriendsId(Guid userAccountId);
+
+        public FriendRequestResponseDTO GetRelationship(Guid userAccountId, Guid receiverAccountId);
     }
     public class FriendRepository : GenericRepository<Friend>, IFriendRepository
     {
@@ -85,6 +87,63 @@ namespace Pastebook.Data.Repositories
             }
 
             return friendsIdList;
+        }
+
+        public FriendRequestResponseDTO GetRelationship(Guid userAccountId, Guid receiverAccountId)
+        {
+            var sender = this.Context.Friends
+                .Select(e => e)
+                .Where(e => 
+                (e.UserAccountId.Equals(userAccountId) && e.FriendRequestReceiver.Equals(receiverAccountId))
+                )
+                .FirstOrDefault();
+
+            var receiver = this.Context.Friends
+                .Select(e => e)
+                .Where(e =>
+                (e.FriendRequestReceiver.Equals(userAccountId) && e.UserAccountId.Equals(receiverAccountId))
+                )
+                .FirstOrDefault();
+            if (sender is object)
+            {
+                var relationship = "";
+                if (sender.FriendRequestStatus.Equals("Accepted"))
+                {
+                    relationship = "Accepted";
+                }
+                if (sender.FriendRequestStatus.Equals("Pending"))
+                {
+                    relationship = "pendingresponse";
+                }
+                return new FriendRequestResponseDTO()
+                {
+                    FriendId = sender.FriendId,
+                    Response = relationship
+                };
+            }
+            if (receiver is object)
+            {
+                var relationship = "";
+                if (receiver.FriendRequestStatus.Equals("Accepted"))
+                {
+                    relationship = "Accepted";
+                }
+                if (receiver.FriendRequestStatus.Equals("Pending"))
+                {
+                    relationship = "pendingrequest";
+                }
+                return new FriendRequestResponseDTO()
+                {
+                    FriendId = receiver.FriendId,
+                    Response = relationship,
+                };
+            }
+
+            return new FriendRequestResponseDTO()
+            {
+                FriendId = Guid.Parse("00000000-0000-0000-0000-000000000000"),
+                Response = "stranger"
+            };
         }
     }
 }
