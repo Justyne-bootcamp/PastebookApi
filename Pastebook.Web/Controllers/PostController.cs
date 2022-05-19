@@ -37,7 +37,7 @@ namespace Pastebook.Web.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
-            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
+            var userAccountId = postForm.SessionId;
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             //var username = HttpContext.Session.GetString("username");
             var username = "testangu1";
@@ -152,11 +152,11 @@ namespace Pastebook.Web.Controllers
 
         [HttpGet]
         [Route("newsfeed")]
-        public async Task<IActionResult> GetNewsFeed()
+        public async Task<IActionResult> GetNewsFeed([FromQuery] string sessionId)
         {
 
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
+            var userAccountId = Guid.Parse(sessionId);
             var friends = _friendService.GetFriendsId(userAccountId).ToList();
 
             friends.Add(userAccountId);
@@ -168,10 +168,10 @@ namespace Pastebook.Web.Controllers
 
         [HttpGet]
         [Route("timeline")]
-        public async Task<IActionResult> GetTimeline()
+        public async Task<IActionResult> GetTimeline([FromQuery] string sessionId)
         {
             //var userAccountId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var userAccountId = Guid.Parse("39315C50-15B9-4D95-9772-6749A6066CAB");
+            var userAccountId = Guid.Parse(sessionId);
             var posts = _postService.GetTimelinePosts(userAccountId);
             if(posts != null)
             {

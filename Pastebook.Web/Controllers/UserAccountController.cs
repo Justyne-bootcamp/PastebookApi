@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pastebook.Data.Exceptions;
 using Pastebook.Data.Models;
+using Pastebook.Data.Models.DataTransferObjects;
 using Pastebook.Web.DataTransferObjects;
 using Pastebook.Web.Http;
 using Pastebook.Web.Models;
@@ -55,10 +56,10 @@ namespace Pastebook.Web.Controllers
 
         [HttpGet]
         [Route("setting")]
-        public async Task<IActionResult> GetUserAccountBySessionId()
+        public async Task<IActionResult> GetUserAccountBySessionId([FromQuery] string sessionId)
         {
             //var sessionId = HttpContext.Session.GetString("userAccountId");
-            var sessionId = "610D9455-4E7B-4B78-A4CF-99E47A48FCBE";
+            var userAccountId = sessionId;
             try
             {
                 var userAccount = await _userAccountService.FindById(Guid.Parse(sessionId));
@@ -106,27 +107,32 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpPut, Route("setting")]
-        public async Task<IActionResult> UpdateRegistrationInfo(UserAccount userAccount)
+        public async Task<IActionResult> UpdateRegistrationInfo(UpdateRegistrationDTO updateRegistrationDTO)
         {
             //var sessionId = HttpContext.Session.GetString("userAccountId");
-            var sessionId = "610D9455-4E7B-4B78-A4CF-99E47A48FCBE";
-            if (sessionId.ToLower() != userAccount.UserAccountId.ToString())
+            var sessionId = updateRegistrationDTO.SessionId;
+            if (sessionId != updateRegistrationDTO.UserAccountId.ToString())
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
             
             if (ModelState.IsValid)
             {
-                if (userAccount.Password.Length < 6)
+                if (updateRegistrationDTO.Password.Length < 6)
                 {
                     throw new InvalidRegistrationException("Password length should be more than 6");
                 }
                 var user = await _userAccountService.FindById(Guid.Parse(sessionId));
-                userAccount.Username = user.Username;
-                var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
-                userAccount.Password = newPassword;
-                await _userAccountService.Update(userAccount);
-                return StatusCode(StatusCodes.Status202Accepted, userAccount);
+                var newPassword = _userAccountService.GetHashPassword(updateRegistrationDTO.Password, updateRegistrationDTO.Username);
+                user.FirstName = updateRegistrationDTO.FirstName;
+                user.LastName = updateRegistrationDTO.LastName;
+                user.Email = updateRegistrationDTO.Email;
+                user.Password = newPassword;
+                user.MobileNumber = updateRegistrationDTO.MobileNumber;
+                user.Birthday = updateRegistrationDTO.Birthday;
+                user.Gender = updateRegistrationDTO.Gender;
+                await _userAccountService.Update(user);
+                return StatusCode(StatusCodes.Status202Accepted, user);
             }
             return StatusCode(StatusCodes.Status400BadRequest);
         }
