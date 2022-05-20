@@ -16,7 +16,7 @@ namespace Pastebook.Web.Services
         public Task<Post> Delete(Guid id);
         public IEnumerable<PostDTO> GetAllNewsfeedPost(Guid userAccountId, List<Guid> friendsList);
         public Guid GetUserAccountIdByPost(Guid postId);
-        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId);
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId, string username);
     }
     public class PostService : IPostService
     {
@@ -60,9 +60,9 @@ namespace Pastebook.Web.Services
             return _postRepository.GetUserAccountIdByPost(postId);
         }
 
-        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId)
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId, string username)
         {
-            return _postRepository.GetTimelinePosts(userAccountId, sessionId);
+            return _postRepository.GetTimelinePosts(userAccountId, sessionId, username);
         }
     }
 }

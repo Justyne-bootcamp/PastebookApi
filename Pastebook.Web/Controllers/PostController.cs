@@ -165,7 +165,7 @@ namespace Pastebook.Web.Controllers
 
             var profileUser = _userAccountService.FindByUsername(username);
             var userAccountId = profileUser.UserAccountId;
-            var posts = _postService.GetTimelinePosts(userAccountId, sessionId);
+            var posts = _postService.GetTimelinePosts(userAccountId, sessionId, username);
             if(posts != null)
             {
                 return StatusCode(StatusCodes.Status200OK, posts);

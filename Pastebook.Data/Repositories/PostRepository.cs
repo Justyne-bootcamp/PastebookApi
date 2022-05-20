@@ -14,7 +14,8 @@ namespace Pastebook.Data.Repositories
     {
         public IEnumerable<PostDTO> GetAllNewsfeedPost(Guid userAccountId, List<Guid> friendsList);
         public Guid GetUserAccountIdByPost(Guid postId);
-        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId);
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId, string username);
+
     }
     public class PostRepository : GenericRepository<Post>, IPostRepository
     {
@@ -53,7 +54,13 @@ namespace Pastebook.Data.Repositories
                     .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(userAccountId))
                     .FirstOrDefault();
 
-                if(isLiked != null)
+                var userSearch = this.Context.UserAccounts
+                    .Where(u => u.UserAccountId.Equals(post.PostLocation))
+                    .FirstOrDefault();
+
+                post.Username = userSearch.Username;
+
+                if (isLiked != null)
                 {
                     post.isLiked = true;
                 }
@@ -66,7 +73,7 @@ namespace Pastebook.Data.Repositories
             return allPosts;
         }
 
-        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId)
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId, string username)
         {
             var timeListPosts = this.Context.Posts.Join(
                 this.Context.UserAccounts,
@@ -81,7 +88,7 @@ namespace Pastebook.Data.Repositories
                     PostLocation = post.PostLocation,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Username = user.Username,
+                    Username = username,
                     PostPhotoPath = post.PostPhotoPath,
                     ProfilePhotoPath = user.ProfilePhotoPath,
                 })
