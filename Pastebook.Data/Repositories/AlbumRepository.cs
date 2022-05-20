@@ -11,7 +11,7 @@ namespace Pastebook.Data.Repositories
 {
     public interface IAlbumRepository: IBaseRepository<Album>
     {
-        public IEnumerable<Album> GetAlbumByUserAccountId(Guid userId);
+        public IEnumerable<Album> GetAlbumByUsername(string username);
     }
     public class AlbumRepository : GenericRepository<Album>, IAlbumRepository
     {
@@ -21,14 +21,19 @@ namespace Pastebook.Data.Repositories
 
         }
 
-        public IEnumerable<Album> GetAlbumByUserAccountId(Guid userId)
+        public IEnumerable<Album> GetAlbumByUsername(string username)
         {
-            var album = this.Context.Albums
+            var user = this.Context.UserAccounts
                 .Select(e => e)
-                .Where(e => e.UserAccountId.Equals(userId))
+                .Where(e => e.Username.Equals(username))
+                .FirstOrDefault();
+
+            var albums = this.Context.Albums
+                .Select(e => e)
+                .Where(e => e.UserAccountId.Equals(user.UserAccountId))
                 .ToList();
 
-            return album;
+            return albums;
         }
     }
 }

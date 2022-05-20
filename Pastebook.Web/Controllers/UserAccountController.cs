@@ -87,24 +87,31 @@ namespace Pastebook.Web.Controllers
                 {
                     throw new InvalidRegistrationException("Password length should be more than 6");
                 }
-                var userEmail = _userAccountService.FindByEmail(userAccount.Email);
-                if (userEmail != null)
+                var userEmail = new CredentialDTO();
+                try
                 {
-                    return StatusCode(
-                        StatusCodes.Status404NotFound,
-                        new HttpResponseError()
-                        {
-                            Message = "Email already taken.",
-                            StatusCode = StatusCodes.Status409Conflict
-                        });
+                    userEmail = _userAccountService.FindByEmail(userAccount.Email);
+
+                }catch (Exception ex)
+                {
+                    var newGuid = Guid.NewGuid();
+                    userAccount.UserAccountId = newGuid;
+                    userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
+                    var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
+                    userAccount.Password = newPassword;
+                    var newUser = await _userAccountService.Insert(userAccount);
+                    return StatusCode(StatusCodes.Status201Created, newUser);
                 }
-                var newGuid = Guid.NewGuid();
-                userAccount.UserAccountId = newGuid;
-                userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
-                var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
-                userAccount.Password = newPassword;
-                var newUser = await _userAccountService.Insert(userAccount);
-                return StatusCode(StatusCodes.Status201Created, newUser);
+               
+                return StatusCode(
+                    StatusCodes.Status404NotFound,
+                    new HttpResponseError()
+                    {
+                        Message = "Email already taken.",
+                        StatusCode = StatusCodes.Status409Conflict
+                    });
+                
+                
             }
             catch (Exception e)
             {
@@ -149,9 +156,21 @@ namespace Pastebook.Web.Controllers
                         throw new InvalidRegistrationException("Password length should be more than 6");
                     }
                     var user = await _userAccountService.FindById(Guid.Parse(sessionId));
-                    var userEmail = _userAccountService.FindByEmail(updateRegistrationDTO.Email);
-                    if(!user.Email.Equals(updateRegistrationDTO.Email))
+                    var userEmail = new CredentialDTO();
+                    var newPassword = "";
+
+
+
+
+                    if (!user.Email.Equals(updateRegistrationDTO.Email))
                     {
+                        try
+                        {
+                            userEmail = _userAccountService.FindByEmail(updateRegistrationDTO.Email);
+                        }catch (Exception ex)
+                        {
+                            goto UpdateData;
+                        }
                         if (userEmail != null)
                         {
                             return StatusCode(
@@ -163,7 +182,9 @@ namespace Pastebook.Web.Controllers
                             });
                         }
                     }
-                    var newPassword = _userAccountService.GetHashPassword(updateRegistrationDTO.Password, updateRegistrationDTO.Username);
+                    UpdateData:
+
+                    newPassword = _userAccountService.GetHashPassword(updateRegistrationDTO.Password, updateRegistrationDTO.Username);
                     user.FirstName = updateRegistrationDTO.FirstName;
                     user.LastName = updateRegistrationDTO.LastName;
                     user.Email = updateRegistrationDTO.Email;
@@ -189,22 +210,6 @@ namespace Pastebook.Web.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("aboutme")]
-
-        //public async Task<IActionResult> AddAboutMe([FromBody] ProfileFormDTO profileForm)
-        //{
-
-        //    //var userAccountId = HttpContext.Session.GetString("userAccountId");
-        //    var userAccountId = "FF2E9BD8-37A7-4980-8FC2-43AE89BB7A8D";
-        //    Guid userAccountIdGuid = Guid.Parse(userAccountId);
-        //    var userAccount = await _userAccountService.FindById(userAccountIdGuid);
-        //    userAccount.AboutMe = profileForm.AboutMe;
-        //    var updateAboutMe = await _userAccountService.Update(userAccount);
-
-        //    return StatusCode(StatusCodes.Status200OK, profileForm.AboutMe);
-        //}
-
         [HttpPost]
         [Consumes("multipart/form-data")]
         [Route("editprofile")]
@@ -212,13 +217,11 @@ namespace Pastebook.Web.Controllers
         {
             try
             {
-                //var userAccountId = "143ADC00-3A53-4F86-A175-6DBF4DB36BF8";
                 Guid userAccountIdGuid = Guid.Parse(profileFormDTO.UserAccountId);
                 var userAccount = await _userAccountService.FindById(userAccountIdGuid);
 
                 if (profileFormDTO.ProfilePicture != null)
                 {
-                    //var username = HttpContext.Session.GetString("username");
                     var username = userAccount.Username;
                     string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\profilePicture\";
 
@@ -230,16 +233,10 @@ namespace Pastebook.Web.Controllers
                     {
                         await profileFormDTO.ProfilePicture.CopyToAsync(fileStream);
                         fileStream.Flush();
-                    }
-
-
-                    //var userAccountId = HttpContext.Session.GetString("userAccountId");
-                   
+                    }                   
                     
                     userAccount.ProfilePhotoPath = $@"{profileFormDTO.ProfilePicture.FileName}";
-                    
-
-                    
+                                      
                 }
                 if (!string.IsNullOrEmpty(profileFormDTO.AboutMe))
                 {
