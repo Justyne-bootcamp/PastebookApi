@@ -33,7 +33,6 @@ namespace Pastebook.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LikePost([FromForm] LikeDTO likeDto)
         {
-            //var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
             var userAccountId = Guid.Parse(likeDto.SessionId);
             var postId = Guid.Parse(likeDto.PostId);
             var likePost = _likeService.GetLikeByPostIdAndUserId(userAccountId, postId);
@@ -67,18 +66,6 @@ namespace Pastebook.Web.Controllers
             }
             return StatusCode(StatusCodes.Status400BadRequest, likePost);
 
-        }
-
-        [HttpGet]
-        [Route("ifLiked")]
-        public async Task<IActionResult> GetIfLiked([FromBody] string postStringId)
-        {
-            //var sessionId = Guid.Parse(HttpContext.Session.GetString("userAccountId"));
-            var sessionId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
-            var postId = Guid.Parse(postStringId);
-            var likedPost = _likeService.GetLikeByPostIdAndUserId(sessionId, postId);
-
-            return StatusCode(StatusCodes.Status201Created, likedPost);
         }
     }
 }

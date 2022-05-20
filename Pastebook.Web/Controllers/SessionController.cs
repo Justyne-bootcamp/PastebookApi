@@ -63,7 +63,6 @@ namespace Pastebook.Web.Controllers
                     });
             }
         }
-        //for stage only
         [HttpPost]
         [Route("password/{password}")]
         public IActionResult LoginPassword(string password)
@@ -100,7 +99,6 @@ namespace Pastebook.Web.Controllers
         [Route("settingPassword")]
         public async Task<IActionResult> SettingPassword([FromBody] UpdateRegistrationConfirmationDTO confirmationDTO)
         {
-            //var userAccountId = HttpContext.Session.GetString("userAccountId");
             var userAccountId = confirmationDTO.SessionId;
             var user = await _userAccountService.FindById(userAccountId);
             var hashedPassword = _userAccountService.GetHashPassword(confirmationDTO.Password, user.Username);

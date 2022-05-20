@@ -84,7 +84,6 @@ namespace Pastebook.Data.Repositories
                     Username = user.Username,
                     PostPhotoPath = post.PostPhotoPath,
                     ProfilePhotoPath = user.ProfilePhotoPath,
-                    Username = user.Username,
                 })
 
             .Where(u => u.PostLocation.Equals(userAccountId))

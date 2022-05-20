@@ -30,10 +30,10 @@ namespace Pastebook.Web.Controllers
         }
 
         [HttpGet]
-        [Route("myalbum/{userAccountId}")]
-        public IActionResult GetMyAlbums(string userAccountId)
+        [Route("myalbum/{username}")]
+        public IActionResult GetMyAlbums(string username)
         {
-            var albums = _albumService.GetAlbumByUserAccountId(Guid.Parse(userAccountId));
+            var albums = _albumService.GetAlbumByUsername(username);
             return StatusCode(StatusCodes.Status200OK, albums);
         }
 
