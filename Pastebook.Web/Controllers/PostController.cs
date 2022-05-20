@@ -38,6 +38,8 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
             var userAccountId = postForm.SessionId;
+            var getUsername = await _userAccountService.FindById(userAccountId);
+            var username = getUsername.Username;
             var postPhotoPath = "";
             var newPost = new Post();
             try
@@ -46,7 +48,7 @@ namespace Pastebook.Web.Controllers
                 {
                     var fileExtension = Path.GetExtension(postForm.Photo.FileName);
                     postPhotoPath = $"{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
-                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{postForm.Username}\posts\";
+                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\posts\";
                     //checking if folder not exist then create it
                     if ((!Directory.Exists(path)))
                     {
@@ -151,19 +153,19 @@ namespace Pastebook.Web.Controllers
 
             friends.Add(userAccountId);
 
-            var newsfeed = _postService.GetAllNewsfeedPost(friends);
+            var newsfeed = _postService.GetAllNewsfeedPost(userAccountId, friends);
 
             return StatusCode(StatusCodes.Status200OK, newsfeed);
         }
 
         [HttpGet]
         [Route("timeline")]
-        public async Task<IActionResult> GetTimeline([FromQuery] string username)
+        public async Task<IActionResult> GetTimeline([FromQuery] string username, string sessionId)
         {
 
             var profileUser = _userAccountService.FindByUsername(username);
             var userAccountId = profileUser.UserAccountId;
-            var posts = _postService.GetTimelinePosts(userAccountId);
+            var posts = _postService.GetTimelinePosts(userAccountId, sessionId);
             if(posts != null)
             {
                 return StatusCode(StatusCodes.Status200OK, posts);

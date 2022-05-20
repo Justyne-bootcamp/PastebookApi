@@ -20,5 +20,6 @@ namespace Pastebook.Data.Models.DataTransferObjects
         public string MobileNumber { get; set; }
         public string Username { get; set; }
         public string SessionId { get; set; }
+        public string ProfilePhotoPath { get; set; }
     }
 }
