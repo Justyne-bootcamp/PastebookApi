@@ -29,7 +29,7 @@ namespace Pastebook.Data.Repositories
 
         public string CreateUsername(string firstName, string lastName)
         {
-            string concattedName = firstName.Trim() + lastName.Trim();
+            string concattedName = firstName.Trim().Replace(" ", "") + lastName.Trim().Replace(" ", "");
             string username = this.CheckUsernameExist(concattedName);
             return username;
         }

@@ -54,12 +54,6 @@ namespace Pastebook.Data.Repositories
                     .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(userAccountId))
                     .FirstOrDefault();
 
-                var userSearch = this.Context.UserAccounts
-                    .Where(u => u.UserAccountId.Equals(post.PostLocation))
-                    .FirstOrDefault();
-
-                post.Username = userSearch.Username;
-
                 if (isLiked != null)
                 {
                     post.isLiked = true;
@@ -88,7 +82,7 @@ namespace Pastebook.Data.Repositories
                     PostLocation = post.PostLocation,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Username = username,
+                    Username = user.Username,
                     PostPhotoPath = post.PostPhotoPath,
                     ProfilePhotoPath = user.ProfilePhotoPath,
                 })

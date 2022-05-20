@@ -41,6 +41,7 @@ namespace Pastebook.Web.Controllers
             var getUsername = await _userAccountService.FindById(userAccountId);
             var username = getUsername.Username;
             var postPhotoPath = "";
+            var photoPath = "";
             var newPost = new Post();
             try
             {
@@ -61,6 +62,7 @@ namespace Pastebook.Web.Controllers
                     {
                         await postForm.Photo.CopyToAsync(fileStream);
                     }
+                    photoPath = $@"{ username }/posts/{ postPhotoPath }";
                 }
 
                 newPost = new Post
@@ -69,7 +71,7 @@ namespace Pastebook.Web.Controllers
                     PostId = Guid.NewGuid(),
                     TextContent = postForm.TextContent,
                     TimeStamp = DateTime.Now,
-                    PostPhotoPath = postPhotoPath,
+                    PostPhotoPath = photoPath,
                     PostLocation = userAccountId
                 };
 
@@ -92,6 +94,7 @@ namespace Pastebook.Web.Controllers
             var userAccountId = postForm.SessionId;
             var username = postForm.Username;
             var postPhotoPath = "";
+            var photoPath = "";
             var newPost = new Post();
             try
             {
@@ -112,7 +115,7 @@ namespace Pastebook.Web.Controllers
                     {
                         await postForm.Photo.CopyToAsync(fileStream);
                     }
-
+                    photoPath = $@"{ username }/posts/{ postPhotoPath }";
                 }
 
                 var profileUser = _userAccountService.FindByUsername(postForm.Username);
@@ -122,8 +125,9 @@ namespace Pastebook.Web.Controllers
                     PostId = Guid.NewGuid(),
                     TextContent = postForm.TextContent,
                     TimeStamp = DateTime.Now,
-                    PostPhotoPath = postPhotoPath,
+                    PostPhotoPath = photoPath,
                     PostLocation = profileUser.UserAccountId
+
                 };
 
                 var add = await _postService.Insert(newPost);
