@@ -81,17 +81,42 @@ namespace Pastebook.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterNewUser([FromBody] UserAccount userAccount)
         {
-            if (userAccount.Password.Length < 6)
+            try
             {
-                throw new InvalidRegistrationException("Password length should be more than 6");
+                if (userAccount.Password.Length < 6)
+                {
+                    throw new InvalidRegistrationException("Password length should be more than 6");
+                }
+                var userEmail = _userAccountService.FindByEmail(userAccount.Email);
+                if (userEmail != null)
+                {
+                    return StatusCode(
+                        StatusCodes.Status404NotFound,
+                        new HttpResponseError()
+                        {
+                            Message = "Email already taken.",
+                            StatusCode = StatusCodes.Status409Conflict
+                        });
+                }
+                var newGuid = Guid.NewGuid();
+                userAccount.UserAccountId = newGuid;
+                userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
+                var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
+                userAccount.Password = newPassword;
+                var newUser = await _userAccountService.Insert(userAccount);
+                return StatusCode(StatusCodes.Status201Created, newUser);
             }
-            var newGuid = Guid.NewGuid();
-            userAccount.UserAccountId = newGuid;
-            userAccount.Username = _userAccountService.CreateUsername(userAccount.FirstName, userAccount.LastName);
-            var newPassword = _userAccountService.GetHashPassword(userAccount.Password, userAccount.Username);
-            userAccount.Password = newPassword;
-            var newUser = await _userAccountService.Insert(userAccount);
-            return StatusCode(StatusCodes.Status201Created, newUser);
+            catch (Exception e)
+            {
+                return StatusCode(
+                StatusCodes.Status404NotFound,
+                new HttpResponseError()
+                {
+                    Message = e.Message,
+                    StatusCode = StatusCodes.Status404NotFound
+                }
+                );
+            }
         }
 
         [HttpGet, Route("search/{searchName}")]
@@ -109,32 +134,59 @@ namespace Pastebook.Web.Controllers
         [HttpPut, Route("setting")]
         public async Task<IActionResult> UpdateRegistrationInfo(UpdateRegistrationDTO updateRegistrationDTO)
         {
-            //var sessionId = HttpContext.Session.GetString("userAccountId");
-            var sessionId = updateRegistrationDTO.SessionId;
-            if (sessionId != updateRegistrationDTO.UserAccountId.ToString())
+            try
             {
+                var sessionId = updateRegistrationDTO.SessionId;
+                if (sessionId != updateRegistrationDTO.UserAccountId.ToString())
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (updateRegistrationDTO.Password.Length < 6)
+                    {
+                        throw new InvalidRegistrationException("Password length should be more than 6");
+                    }
+                    var user = await _userAccountService.FindById(Guid.Parse(sessionId));
+                    var userEmail = _userAccountService.FindByEmail(updateRegistrationDTO.Email);
+                    if(!user.Email.Equals(updateRegistrationDTO.Email))
+                    {
+                        if (userEmail != null)
+                        {
+                            return StatusCode(
+                            StatusCodes.Status409Conflict,
+                            new HttpResponseError()
+                            {
+                                Message = "Email already taken!",
+                                StatusCode = StatusCodes.Status409Conflict
+                            });
+                        }
+                    }
+                    var newPassword = _userAccountService.GetHashPassword(updateRegistrationDTO.Password, updateRegistrationDTO.Username);
+                    user.FirstName = updateRegistrationDTO.FirstName;
+                    user.LastName = updateRegistrationDTO.LastName;
+                    user.Email = updateRegistrationDTO.Email;
+                    user.Password = newPassword;
+                    user.MobileNumber = updateRegistrationDTO.MobileNumber;
+                    user.Birthday = updateRegistrationDTO.Birthday;
+                    user.Gender = updateRegistrationDTO.Gender;
+                    await _userAccountService.Update(user);
+                    return StatusCode(StatusCodes.Status202Accepted, user);
+                }
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-            
-            if (ModelState.IsValid)
+            catch (Exception e)
             {
-                if (updateRegistrationDTO.Password.Length < 6)
+                return StatusCode(
+                StatusCodes.Status404NotFound,
+                new HttpResponseError()
                 {
-                    throw new InvalidRegistrationException("Password length should be more than 6");
+                    Message = e.Message,
+                    StatusCode = StatusCodes.Status404NotFound
                 }
-                var user = await _userAccountService.FindById(Guid.Parse(sessionId));
-                var newPassword = _userAccountService.GetHashPassword(updateRegistrationDTO.Password, updateRegistrationDTO.Username);
-                user.FirstName = updateRegistrationDTO.FirstName;
-                user.LastName = updateRegistrationDTO.LastName;
-                user.Email = updateRegistrationDTO.Email;
-                user.Password = newPassword;
-                user.MobileNumber = updateRegistrationDTO.MobileNumber;
-                user.Birthday = updateRegistrationDTO.Birthday;
-                user.Gender = updateRegistrationDTO.Gender;
-                await _userAccountService.Update(user);
-                return StatusCode(StatusCodes.Status202Accepted, user);
+                );
             }
-            return StatusCode(StatusCodes.Status400BadRequest);
         }
 
         //[HttpPost]

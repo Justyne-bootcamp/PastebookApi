@@ -12,9 +12,9 @@ namespace Pastebook.Data.Repositories
 {
     public interface IPostRepository : IBaseRepository<Post>
     {
-        public IEnumerable<PostDTO> GetAllNewsfeedPost(List<Guid> friendsList);
+        public IEnumerable<PostDTO> GetAllNewsfeedPost(Guid userAccountId, List<Guid> friendsList);
         public Guid GetUserAccountIdByPost(Guid postId);
-        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId);
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId);
     }
     public class PostRepository : GenericRepository<Post>, IPostRepository
     {
@@ -23,7 +23,7 @@ namespace Pastebook.Data.Repositories
             this.Context = context;
         }
 
-        public IEnumerable<PostDTO> GetAllNewsfeedPost(List<Guid> friendsList)
+        public IEnumerable<PostDTO> GetAllNewsfeedPost(Guid userAccountId, List<Guid> friendsList)
         {
             var allPosts = this.Context.Posts.Join(
                 this.Context.UserAccounts,
@@ -50,7 +50,7 @@ namespace Pastebook.Data.Repositories
             foreach(var post in allPosts)
             {
                 var isLiked = this.Context.Likes
-                    .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(l.UserAccountId))
+                    .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(userAccountId))
                     .FirstOrDefault();
 
                 if(isLiked != null)
@@ -66,7 +66,7 @@ namespace Pastebook.Data.Repositories
             return allPosts;
         }
 
-        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId)
+        public IEnumerable<PostDTO> GetTimelinePosts(Guid userAccountId, string sessionId)
         {
             var timeListPosts = this.Context.Posts.Join(
                 this.Context.UserAccounts,
@@ -81,6 +81,7 @@ namespace Pastebook.Data.Repositories
                     PostLocation = post.PostLocation,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    Username = user.Username,
                     PostPhotoPath = post.PostPhotoPath,
                     ProfilePhotoPath = user.ProfilePhotoPath,
                     Username = user.Username,
@@ -93,7 +94,7 @@ namespace Pastebook.Data.Repositories
             foreach (var post in timeListPosts)
             {
                 var isLiked = this.Context.Likes
-                    .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(l.UserAccountId))
+                    .Where(l => l.PostId.Equals(post.PostId) && l.UserAccountId.Equals(Guid.Parse(sessionId)))
                     .FirstOrDefault();
 
                 if (isLiked != null)

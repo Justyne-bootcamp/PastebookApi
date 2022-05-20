@@ -5,6 +5,7 @@ using System;
 using Pastebook.Web.Http;
 using Pastebook.Web.DataTransferObjects;
 using System.Threading.Tasks;
+using Pastebook.Data.Models.DataTransferObjects;
 
 namespace Pastebook.Web.Controllers
 {
@@ -97,12 +98,12 @@ namespace Pastebook.Web.Controllers
 
         [HttpPost]
         [Route("settingPassword")]
-        public async Task<IActionResult> SettingPassword([FromBody] string password)
+        public async Task<IActionResult> SettingPassword([FromBody] UpdateRegistrationConfirmationDTO confirmationDTO)
         {
             //var userAccountId = HttpContext.Session.GetString("userAccountId");
-            var userAccountId = Guid.Parse("610D9455-4E7B-4B78-A4CF-99E47A48FCBE");
+            var userAccountId = confirmationDTO.SessionId;
             var user = await _userAccountService.FindById(userAccountId);
-            var hashedPassword = _userAccountService.GetHashPassword(password, user.Username);
+            var hashedPassword = _userAccountService.GetHashPassword(confirmationDTO.Password, user.Username);
             if (user.Password.Equals(hashedPassword))
             {
                 return StatusCode(
@@ -116,9 +117,12 @@ namespace Pastebook.Web.Controllers
             else
             {
                 return StatusCode(
-                    StatusCodes.Status404NotFound,
-
-                    hashedPassword);
+                        StatusCodes.Status401Unauthorized,
+                        new HttpResponseError()
+                        {
+                            Message = "Password incorrect!",
+                            StatusCode = StatusCodes.Status409Conflict
+                        });
             }
 
         }

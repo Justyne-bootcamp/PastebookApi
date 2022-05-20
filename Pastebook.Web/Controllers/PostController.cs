@@ -153,19 +153,19 @@ namespace Pastebook.Web.Controllers
 
             friends.Add(userAccountId);
 
-            var newsfeed = _postService.GetAllNewsfeedPost(friends);
+            var newsfeed = _postService.GetAllNewsfeedPost(userAccountId, friends);
 
             return StatusCode(StatusCodes.Status200OK, newsfeed);
         }
 
         [HttpGet]
         [Route("timeline")]
-        public async Task<IActionResult> GetTimeline([FromQuery] string username)
+        public async Task<IActionResult> GetTimeline([FromQuery] string username, string sessionId)
         {
 
             var profileUser = _userAccountService.FindByUsername(username);
             var userAccountId = profileUser.UserAccountId;
-            var posts = _postService.GetTimelinePosts(userAccountId);
+            var posts = _postService.GetTimelinePosts(userAccountId, sessionId);
             if(posts != null)
             {
                 return StatusCode(StatusCodes.Status200OK, posts);
