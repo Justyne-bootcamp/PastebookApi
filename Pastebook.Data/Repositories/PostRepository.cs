@@ -61,6 +61,25 @@ namespace Pastebook.Data.Repositories
                 {
                     post.isLiked = false;
                 }
+
+                var comments = this.Context.Comments.Join(
+                    this.Context.UserAccounts,
+                    comments => comments.UserAccountId,
+                    user => user.UserAccountId,
+                    (comments, user) => new CommentDTO
+                    {
+                        PostId = post.PostId,
+                        UserAccountId = user.UserAccountId,
+                        Username = user.Username,
+                        FirstName = user.FirstName,
+                        LastName= user.LastName,
+                        CommentContent = comments.CommentContent
+
+                    })
+                    .Where(c => c.PostId.Equals(post.PostId))
+                    .ToList();
+
+                post.Comments = comments;
             }
 
             return allPosts;
