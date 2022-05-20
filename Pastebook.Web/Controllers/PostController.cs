@@ -38,6 +38,8 @@ namespace Pastebook.Web.Controllers
         public async Task<IActionResult> AddPost([FromForm] PostFormDTO postForm)
         {
             var userAccountId = postForm.SessionId;
+            var getUsername = await _userAccountService.FindById(userAccountId);
+            var username = getUsername.Username;
             var postPhotoPath = "";
             var newPost = new Post();
             try
@@ -46,7 +48,7 @@ namespace Pastebook.Web.Controllers
                 {
                     var fileExtension = Path.GetExtension(postForm.Photo.FileName);
                     postPhotoPath = $"{DateTime.Now.ToString("yyyyMMddhhmmss")}{fileExtension}";
-                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{postForm.Username}\posts\";
+                    string path = $@"{_webHostEnvironment.ContentRootPath}\..\..\PastebookClient\src\assets\uploaded_photo\{username}\posts\";
                     //checking if folder not exist then create it
                     if ((!Directory.Exists(path)))
                     {
